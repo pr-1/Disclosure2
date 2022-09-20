@@ -9,6 +9,7 @@ import ShopTabNavigator from "./navigation/ShopTabNavigator";
 const App = () => {
   return (
     <NavigationContainer>
+      <StatusBar style="light" />
       <ShopTabNavigator />
     </NavigationContainer>
   );
