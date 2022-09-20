@@ -34,10 +34,49 @@ const categories = [
   { cat: "Family & Events" },
 ];
 
+function LogoTitle() {
+  return (
+    <Image
+      style={{ width: 50, height: 50 }}
+      source={require("../assets/icons/Home_icon.svg")}
+    />
+  );
+}
+
+const drawerOptions = {
+  headerTintColor: "#fff",
+  headerTitleStyle: {
+    color: "#fff",
+  },
+  headerStyle: {
+    backgroundColor: "#000",
+  },
+  headerTitle: (props) => <LogoTitle {...props} />,
+  headerRight: () => (
+    <Button
+      onPress={() => alert("This is a button!")}
+      title="Home"
+      color="#fff"
+    />
+  ),
+};
+
 const MainDrawerNavigator = () => {
   return (
-    <Drawer.Navigator>
-      <Drawer.Screen name="Home" component={Home} />
+    <Drawer.Navigator
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: "#c6cbef", //Drawer background
+          color: "#fff",
+          width: 240,
+          activeTintColor: "#fff" /* font color for active screen label */,
+          activeBackgroundColor: "#68f" /* bg color for active screen */,
+          inactiveTintColor:
+            "#fff" /* Font color for inactive screens' labels */,
+        },
+      }}
+    >
+      <Drawer.Screen name="Home" component={Home} options={drawerOptions} />
       <Drawer.Screen name="About" component={About} />
       <Drawer.Screen
         name="Page1"
@@ -48,6 +87,7 @@ const MainDrawerNavigator = () => {
         name="Page2"
         component={Page2}
         initialParams={{ cat: "cars" }}
+        options={drawerOptions}
       />
 
       {categories.map((data) => (
@@ -56,33 +96,25 @@ const MainDrawerNavigator = () => {
           name={data.cat}
           component={Page2}
           initialParams={{ cat: data.cat }}
+          options={drawerOptions}
         />
       ))}
     </Drawer.Navigator>
   );
 };
 
-const screenOptionStyle = {
-  headerStyle: {
-    backgroundColor: "#9AC4F8",
-  },
-  headerTintColor: "white",
-  headerBackTitle: "Back",
-};
+// const screenOptionStyle = {
+//   headerStyle: {
+//     backgroundColor: "#9AC4F8",
+//   },
+//   headerTintColor: "white",
+//   headerBackTitle: "Back",
+// };
 
 const ShopTabNavigator = () => {
   return (
-    // <Stack.Navigator>
-    //   <Stack.Screen name="Disclosure" component={MainDrawerNavigator} />
-    //   {/* <Stack.Screen name="StartupScreen" component={StartupScreen} /> */}
-    //   <Stack.Screen name="About" component={About} />
-    // </Stack.Navigator>
-
     <Tab.Navigator screenOptions={{ headerShown: false }}>
       <Tab.Screen name="Disclosure" component={MainDrawerNavigator} />
-      {/* <Tab.Screen name="About" component={About} />
-      <Tab.Screen name="Page1" component={Page1} />
-      <Tab.Screen name="Page2" component={Page2} /> */}
     </Tab.Navigator>
   );
 };
