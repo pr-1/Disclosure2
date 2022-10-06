@@ -1,12 +1,10 @@
-// ./screens/About.js
-
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
-const About = (props) => {
+const Magazine = () => {
   return (
     <View style={styles.center}>
-      <Text>This is the about screen</Text>
+      <Text>This is the All Magazine screen</Text>
     </View>
   );
 };
@@ -20,4 +18,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default About;
+export default Magazine;

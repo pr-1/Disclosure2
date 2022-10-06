@@ -1,24 +1,21 @@
 import React from "react";
-import {
-  Platform,
-  SafeAreaView,
-  Button,
-  View,
-  Text,
-  Image,
-  Dimensions,
-} from "react-native";
+import { Image, TouchableOpacity, FlatList } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import BottomTabBar from "../components/UI/BottomTabBar";
+import CustomDrawer from "../components/UI/CustomDrawer";
 
-import { ContactStackNavigator } from "./StackNavigator";
-import TabNavigator from "./TabNavigator";
+import * as RootNavigation from "./RootNavigation";
 
 import Home from "../screens/Home";
-import About from "../screens/About";
-import Page1 from "../screens/Page1";
-import Page2 from "../screens/Page2";
+import MemberId from "../screens/MemberId";
+import Categories from "../screens/Categories";
+import Category from "../screens/Category";
+import Discounts from "../screens/Discounts";
+import Directory from "../screens/Directory";
+import Magazine from "../screens/Magazine";
+
 import StartupScreen from "../screens/StartupScreen";
 
 const Stack = createStackNavigator();
@@ -26,8 +23,8 @@ const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
 const categories = [
-  { cat: "all" },
-  { cat: "home" },
+  { cat: "All Categories" },
+  { cat: "Homes" },
   { cat: "Food & Drink" },
   { cat: "Health & Lifestyle" },
   { cat: "Hair & Beauty" },
@@ -37,8 +34,8 @@ const categories = [
 function LogoTitle() {
   return (
     <Image
-      style={{ width: 50, height: 50 }}
-      source={require("../assets/icons/Home_icon.png")}
+      style={{ width: 160, height: 44, resizeMode: "cover" }}
+      source={require("../assets/icons/DisclosureLogo.jpg")}
     />
   );
 }
@@ -51,69 +48,96 @@ const drawerOptions = {
   headerStyle: {
     backgroundColor: "#000",
   },
+  headerTitleAlign: "center",
+  drawerActiveTintColor: "#fff",
+  drawerInactiveTintColor: "#fff",
+  drawerItemStyle: { marginLeft: 20 },
   headerTitle: (props) => <LogoTitle {...props} />,
   headerRight: () => (
-    <Button
-      onPress={() => alert("This is a button!")}
-      title="Home"
-      color="#fff"
-    />
+    <TouchableOpacity
+      onPress={() => RootNavigation.navigate("Member ID", { userName: "Lucy" })}
+    >
+      <Image
+        style={{ width: 35, height: 35 }}
+        source={require("../assets/icons/Home_icon.png")}
+      />
+    </TouchableOpacity>
+  ),
+};
+
+const dynamicOptionsList = {
+  headerTintColor: "#fff",
+  headerTitleStyle: {
+    color: "#fff",
+  },
+  headerStyle: {
+    backgroundColor: "#000",
+  },
+  headerTitleAlign: "center",
+  drawerActiveTintColor: "#fff",
+  drawerInactiveTintColor: "#fff",
+  drawerItemStyle: { marginLeft: 50 },
+  headerTitle: (props) => <LogoTitle {...props} />,
+  headerRight: () => (
+    <TouchableOpacity
+      onPress={() => RootNavigation.navigate("Member ID", { userName: "Lucy" })}
+    >
+      <Image
+        style={{ width: 35, height: 35 }}
+        source={require("../assets/icons/Home_icon.png")}
+      />
+    </TouchableOpacity>
   ),
 };
 
 const MainDrawerNavigator = () => {
   return (
-    <Drawer.Navigator
-      screenOptions={{
-        drawerStyle: {
-          backgroundColor: "#c6cbef", //Drawer background
-          color: "#fff",
-          width: 240,
-          activeTintColor: "#fff" /* font color for active screen label */,
-          activeBackgroundColor: "#68f" /* bg color for active screen */,
-          inactiveTintColor:
-            "#fff" /* Font color for inactive screens' labels */,
-        },
-      }}
-    >
+    <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />}>
       <Drawer.Screen name="Home" component={Home} options={drawerOptions} />
-      <Drawer.Screen name="About" component={About} />
       <Drawer.Screen
-        name="Page1"
-        component={Page1}
-        options={{ drawerItemStyle: { display: "none" } }}
-      />
-      <Drawer.Screen
-        name="Page2"
-        component={Page2}
-        initialParams={{ cat: "cars" }}
+        name="Member ID"
+        component={MemberId}
         options={drawerOptions}
       />
-
+      <Drawer.Screen
+        name="Categories"
+        component={Categories}
+        options={drawerOptions}
+      />
       {categories.map((data) => (
         <Drawer.Screen
           key={data.cat}
           name={data.cat}
-          component={Page2}
+          component={Category}
           initialParams={{ cat: data.cat }}
-          options={drawerOptions}
+          options={dynamicOptionsList}
         />
       ))}
+      <Drawer.Screen
+        name="All Discounts"
+        component={Discounts}
+        options={drawerOptions}
+      />
+      <Drawer.Screen
+        name="Directory"
+        component={Directory}
+        options={drawerOptions}
+      />
+      <Drawer.Screen
+        name="Magazine"
+        component={Magazine}
+        options={drawerOptions}
+      />
     </Drawer.Navigator>
   );
 };
 
-// const screenOptionStyle = {
-//   headerStyle: {
-//     backgroundColor: "#9AC4F8",
-//   },
-//   headerTintColor: "white",
-//   headerBackTitle: "Back",
-// };
-
 const ShopTabNavigator = () => {
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
+    <Tab.Navigator
+      screenOptions={{ headerShown: false }}
+      tabBar={(props) => <BottomTabBar {...props} />}
+    >
       <Tab.Screen name="Disclosure" component={MainDrawerNavigator} />
     </Tab.Navigator>
   );

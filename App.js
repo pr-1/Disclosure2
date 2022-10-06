@@ -1,14 +1,14 @@
+import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
-
-import DrawerNavigator from "./navigation/DrawerNavigator";
+import { navigationRef } from "./navigation/RootNavigation";
 import ShopTabNavigator from "./navigation/ShopTabNavigator";
 
 const App = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <StatusBar style="light" />
       <ShopTabNavigator />
     </NavigationContainer>

@@ -1,13 +1,10 @@
-// ./screens/Home.js
-
 import React from "react";
-import { View, Button, Text, StyleSheet, Pressable } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { View, Text, StyleSheet } from "react-native";
 
-const Page1 = ({ navigation, route }) => {
+const Category = ({ route }) => {
   return (
     <View style={styles.center}>
-      <Text>This is Page 1 and the category = {route.params.cat}</Text>
+      <Text>This is Category and the category = {route.params.cat}</Text>
     </View>
   );
 };
@@ -36,4 +33,5 @@ const styles = StyleSheet.create({
     padding: 14,
   },
 });
-export default Page1;
+
+export default Category;
