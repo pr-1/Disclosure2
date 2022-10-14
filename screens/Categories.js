@@ -1,41 +1,82 @@
-import { createIconSetFromFontello } from "@expo/vector-icons";
 import React from "react";
-import { View, Text, StyleSheet, FlatList, Image } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import * as RootNavigation from "../navigation/RootNavigation";
 
 const myData = [
-  { name: "All Categories", src: require("../assets/icons/all.png") },
-  { name: "Home", src: require("../assets/icons/home.png") },
-  { name: "Food & Drink", src: require("../assets/icons/food.png") },
-  { name: "Health & Lifestyle", src: require("../assets/icons/health.png") },
-  { name: "Hair & Beauty", src: require("../assets/icons/hair.png") },
-  { name: "Family & Events", src: require("../assets/icons/family.png") },
-  { name: "Fashion & Shopping", src: require("../assets/icons/fashion.png") },
-  { name: "Business", src: require("../assets/icons/business.png") },
-  { name: "Car & Motoring", src: require("../assets/icons/car.png") },
+  {
+    name: "All Categories",
+    src: require("../assets/icons/all.png"),
+    cat: "All Categories",
+  },
+  { name: "Home", src: require("../assets/icons/home.png"), cat: "Homes" },
+  {
+    name: "Food & Drink",
+    src: require("../assets/icons/food.png"),
+    cat: "Food & Drink",
+  },
+  {
+    name: "Health & Lifestyle",
+    src: require("../assets/icons/health.png"),
+    cat: "Health & Lifestyle",
+  },
+  {
+    name: "Hair & Beauty",
+    src: require("../assets/icons/hair.png"),
+    cat: "Hair & Beauty",
+  },
+  {
+    name: "Family & Events",
+    src: require("../assets/icons/family.png"),
+    cat: "Family & Events",
+  },
+  {
+    name: "Fashion & Shopping",
+    src: require("../assets/icons/fashion.png"),
+    cat: "Fashion & Sopping",
+  },
+  {
+    name: "Business",
+    src: require("../assets/icons/business.png"),
+    cat: "Business",
+  },
+  {
+    name: "Car & Motoring",
+    src: require("../assets/icons/car.png"),
+    cat: "Car & Motoring",
+  },
 ];
 
 const Categories = () => {
   return (
-    <View style={styles.center}>
+    <SafeAreaView style={styles.center}>
       <Text>This is Categories screen</Text>
       <FlatList
         data={myData}
         numColumns={3}
         renderItem={({ item }) => (
-          <View>
+          <TouchableOpacity
+            onPress={() => {
+              RootNavigation.navigate(item.cat);
+            }}
+          >
             <View style={styles.imageContainer}>
-              <Image
-                style={{ width: 50, height: 50, resizeMode: "cover" }}
-                source={item.src}
-              />
+              <Image style={styles.imageThumbnail} source={item.src} />
             </View>
             <View style={styles.textContainer}>
               <Text>{item.name}</Text>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -45,14 +86,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     bottom: 0,
   },
-  bottomTabButtons: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    width: "100%",
-    backgroundColor: "#000",
-    height: 80,
-    paddingTop: 10,
+  imageContainer: {
+    flex: 1,
+    flexDirection: "column",
+    margin: 1,
   },
+  imageThumbnail: {
+    flex: 1,
+    justifyContent: "space-around",
+    backgroundColor: "white",
+    width: "100%",
+    height: 80,
+    resizeMode: "cover",
+  },
+
   center: {
     flex: 1,
     justifyContent: "center",
