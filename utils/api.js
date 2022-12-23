@@ -1,5 +1,5 @@
 //const API_URL = process.env.GATSBY_MMC_API_URL; //Strapi instance//api url
-const API_URL = "https://app.disclosurediscounts.co.uk/api/v1";
+const API_URL = "https://app.disclosurediscounts.co.uk/api/v2";
 const apiKey = "12345";
 
 function getHeaders() {
@@ -33,8 +33,6 @@ async function get(url) {
 async function fetchWithBody(method, url, data) {
   method = method.toUpperCase();
   const headers = getHeaders();
-  console.log(`${API_URL}/${url}`, JSON.stringify(data), headers, method);
-
   try {
     const response = await fetch(`${API_URL}/${url}`, {
       headers,
@@ -42,8 +40,9 @@ async function fetchWithBody(method, url, data) {
       body: JSON.stringify(data),
     });
     if (response.status !== 200) return null;
-
-    return await response.json();
+    const resData = await response.json();
+    console.log({ resData });
+    return resData;
   } catch (error) {
     return null;
   }
@@ -57,7 +56,9 @@ const del = async (url, data) => fetchWithBody("delete", url, data);
 export const me = () => get("users/me");
 export const updateMe = (data) => put(`users-permissions/users/me`, { data });
 export const users = () => get("bookings/users");
-export const login = (data) => post("users/login", { data });
+export const login = (email, password) =>
+  post("users/login", { email, password });
+export const signUp = (data) => post("users/signup", { data });
 
 export const miniCart = () => get("carts/mini");
 export const fullCart = () => get("carts/full");

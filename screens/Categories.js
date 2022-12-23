@@ -7,107 +7,111 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
+import { useSelector } from "react-redux";
 import * as RootNavigation from "../navigation/RootNavigation";
+import { Divider } from "react-native-elements";
+import Colors from "../constants/Colors";
 
-const myData = [
-  {
-    name: "All Categories",
-    src: require("../assets/icons/all.png"),
-    cat: "All Categories",
-  },
-  { name: "Home", src: require("../assets/icons/home.png"), cat: "Homes" },
-  {
-    name: "Food & Drink",
-    src: require("../assets/icons/food.png"),
-    cat: "Food & Drink",
-  },
-  {
-    name: "Health & Lifestyle",
-    src: require("../assets/icons/health.png"),
-    cat: "Health & Lifestyle",
-  },
-  {
-    name: "Hair & Beauty",
-    src: require("../assets/icons/hair.png"),
-    cat: "Hair & Beauty",
-  },
-  {
-    name: "Family & Events",
-    src: require("../assets/icons/family.png"),
-    cat: "Family & Events",
-  },
-  {
-    name: "Fashion & Shopping",
-    src: require("../assets/icons/fashion.png"),
-    cat: "Fashion & Sopping",
-  },
-  {
-    name: "Business",
-    src: require("../assets/icons/business.png"),
-    cat: "Business",
-  },
-  {
-    name: "Car & Motoring",
-    src: require("../assets/icons/car.png"),
-    cat: "Car & Motoring",
-  },
-];
+const width = Dimensions.get("window").width;
 
 const Categories = () => {
-  return (
-    <SafeAreaView style={styles.center}>
-      <Text>This is Categories screen</Text>
-      <FlatList
-        data={myData}
-        numColumns={3}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => {
-              RootNavigation.navigate(item.cat);
-            }}
-          >
-            <View style={styles.imageContainer}>
-              <Image style={styles.imageThumbnail} source={item.src} />
-            </View>
-            <View style={styles.textContainer}>
-              <Text>{item.name}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
+  const categories = useSelector((state) => state.products.categories);
+
+  const header = () => {
+    return (
+      <View>
+        <Text style={styles.title}>Categories</Text>
+        <Divider
+          orientation="vertical"
+          color={Colors.primary}
+          style={{ width: "80%", margin: 20, color: "red" }}
+          width="6"
+        />
+      </View>
+    );
+  };
+
+  const separator = () => {
+    return (
+      <Divider
+        orientation="vertical"
+        color={Colors.accent}
+        style={{ width: "80%", margin: 20 }}
       />
-    </SafeAreaView>
-  );
+    );
+  };
+
+  if (!categories.length) {
+    return (
+      <View>
+        <Text>Loading</Text>
+      </View>
+    );
+  } else {
+    return (
+      <SafeAreaView style={styles.center}>
+        <FlatList
+          ListHeaderComponent={header}
+          ItemSeparatorComponent={separator}
+          data={categories}
+          numColumns={3}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => {
+                RootNavigation.navigate("category", { cat: item.name });
+              }}
+            >
+              <View style={styles.categoriesWrapper}>
+                <View style={styles.imageContainer}>
+                  <Image
+                    style={styles.imageThumbnail}
+                    source={{ uri: item.url }}
+                  />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text>{item.name}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+      </SafeAreaView>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
-  navContainer: {
-    position: "absolute",
-    alignItems: "center",
-    bottom: 0,
-  },
   imageContainer: {
-    flex: 1,
-    flexDirection: "column",
     margin: 1,
+    maxWidth: 100,
   },
   imageThumbnail: {
-    flex: 1,
-    justifyContent: "space-around",
     backgroundColor: "white",
-    width: "100%",
-    height: 80,
+    width: (width - 100) / 3,
+    height: 100,
     resizeMode: "cover",
   },
-
   center: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
   },
-  iconBehave: {
-    padding: 14,
+  title: {
+    alignSelf: "center",
+    fontSize: 30,
+    fontFamily: "Kollektif",
+    marginVertical: 30,
+  },
+  categoriesWrapper: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+    width: (width - 100) / 3,
+    maxWidth: 100,
+    marginHorizontal: 10,
   },
 });
 

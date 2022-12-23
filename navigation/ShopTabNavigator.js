@@ -1,6 +1,6 @@
 import React from "react";
-import { Image, TouchableOpacity, FlatList } from "react-native";
-import { createStackNavigator } from "@react-navigation/stack";
+import { Image, TouchableOpacity } from "react-native";
+
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import BottomTabBar from "../components/UI/BottomTabBar";
@@ -15,21 +15,19 @@ import Category from "../screens/Category";
 import Discounts from "../screens/Discounts";
 import Directory from "../screens/Directory";
 import Magazine from "../screens/Magazine";
+import Profile from "../screens/Profile";
 
-import StartupScreen from "../screens/StartupScreen";
-
-const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
-const categories = [
-  { cat: "All Categories" },
-  { cat: "Homes" },
-  { cat: "Food & Drink" },
-  { cat: "Health & Lifestyle" },
-  { cat: "Hair & Beauty" },
-  { cat: "Family & Events" },
-];
+// const categories = [
+//   { cat: "All Categories" },
+//   { cat: "Homes" },
+//   { cat: "Food & Drink" },
+//   { cat: "Health & Lifestyle" },
+//   { cat: "Hair & Beauty" },
+//   { cat: "Family & Events" },
+// ];
 
 function LogoTitle() {
   return (
@@ -104,7 +102,7 @@ const MainDrawerNavigator = () => {
         component={Categories}
         options={drawerOptions}
       />
-      {categories.map((data) => (
+      {/* {categories.map((data) => (
         <Drawer.Screen
           key={data.cat}
           name={data.cat}
@@ -112,7 +110,7 @@ const MainDrawerNavigator = () => {
           initialParams={{ cat: data.cat }}
           options={dynamicOptionsList}
         />
-      ))}
+      ))} */}
       <Drawer.Screen
         name="All Discounts"
         component={Discounts}
@@ -126,6 +124,16 @@ const MainDrawerNavigator = () => {
       <Drawer.Screen
         name="Magazine"
         component={Magazine}
+        options={drawerOptions}
+      />
+      <Drawer.Screen
+        name="category"
+        component={Category}
+        options={drawerOptions}
+      />
+      <Drawer.Screen
+        name="Profile"
+        component={Profile}
         options={drawerOptions}
       />
     </Drawer.Navigator>

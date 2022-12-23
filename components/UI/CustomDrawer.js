@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -11,8 +11,15 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from "@react-navigation/drawer";
+import { useSelector } from "react-redux";
+
+import { AuthContext } from "../context";
+import MenuItem from "./MenuItem";
 
 const CustomDrawer = (props) => {
+  const { signOut } = useContext(AuthContext);
+  const cats = useSelector((state) => state.products.categories);
+
   return (
     <View style={styles.container}>
       <DrawerContentScrollView
@@ -36,22 +43,72 @@ const CustomDrawer = (props) => {
         </ImageBackground>
 
         <View style={styles.drawerItems}>
-          <DrawerItemList {...props} />
+          <MenuItem
+            name="Home"
+            target="Home"
+            cat=""
+            navigation={props.navigation}
+            state={props.state}
+          />
+          <MenuItem
+            name="Member ID"
+            target="Member ID"
+            cat=""
+            navigation={props.navigation}
+            state={props.state}
+          />
+          <MenuItem
+            name="Categories"
+            target="Categories"
+            cat=""
+            navigation={props.navigation}
+            state={props.state}
+          />
+          {cats.map((data) => (
+            <MenuItem
+              key={data.id}
+              name={data.name}
+              target="category"
+              cat={data.name}
+              navigation={props.navigation}
+              state={props.state}
+              labelStyle={styles.categoryItems}
+              wrapperStyle={{ paddingVertical: 10 }}
+            />
+          ))}
+          <MenuItem
+            name="All discounts"
+            target="All Discounts"
+            cat=""
+            navigation={props.navigation}
+            state={props.state}
+          />
+          <MenuItem
+            name="Directory"
+            target="Directory"
+            cat=""
+            navigation={props.navigation}
+            state={props.state}
+          />
+          <MenuItem
+            name="Magazine"
+            target="Magazine"
+            cat=""
+            navigation={props.navigation}
+            state={props.state}
+          />
         </View>
         <View style={styles.bottomSection}>
+          <MenuItem
+            name="Profile Settings"
+            target="Profile"
+            cat=""
+            navigation={props.navigation}
+            state={props.state}
+          />
           <TouchableOpacity
             onPress={() => {
-              console.log("Profile Page");
-            }}
-            style={styles.bottomButtonsWrapper}
-          >
-            <View style={styles.bottomButton}>
-              <Text style={styles.bottomButtonText}>Profile Settings</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              console.log("Sign Out");
+              signOut();
             }}
             style={styles.bottomButtonsWrapper}
           >
@@ -95,6 +152,10 @@ const styles = StyleSheet.create({
   bottomButtonText: {
     fontSize: 15,
     color: "#fff",
+  },
+  categoryItems: {
+    marginLeft: 30,
+    fontSize: 12,
   },
 });
 
