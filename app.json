@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Disclosure2",
-    "slug": "Disclosure2",
-    "version": "1.0.0",
+    "name": "Disclosure Discounts",
+    "slug": "disclosure-discounts",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -18,13 +18,24 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.foxwylie.disclosure-discounts",
+      "buildNumber": "2.0.0",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to allow you to upload a profile picture for your discount card.",
+       " NSPhotoLibraryAddUsageDescription":"This app uses the photo gallery to allow you to upload a profile picture for your discount card.",
+        "NSPhotoLibraryUsageDescription": "This app uses the photo gallery to allow you to upload a profile picture for your discount card.",
+        "NSLocationWhenInUseUsageDescription": "This app uses your location to show you the offers and participating businesses closest to you."
+      }
     },
     "android": {
+      "package": "com.foxwylie.disclosure_discounts",
+      "versionCode": 24,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": ["ACCESS_FINE_LOCATION", "CAMERA", "CAMERA_ROLL"]
     },
     "web": {
       "favicon": "./assets/favicon.png"

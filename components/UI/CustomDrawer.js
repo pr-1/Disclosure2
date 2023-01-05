@@ -1,121 +1,135 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
   Text,
   Image,
-  ImageBackground,
   TouchableOpacity,
+  Dimensions,
+  Platform,
 } from "react-native";
-import {
-  DrawerContentScrollView,
-  DrawerItemList,
-} from "@react-navigation/drawer";
+import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { useSelector } from "react-redux";
+import * as RootNavigation from "./../../navigation/RootNavigation";
 
 import { AuthContext } from "../context";
 import MenuItem from "./MenuItem";
+import Colors from "../../constants/Colors";
+
+const height = Dimensions.get("screen").height;
+const width = Dimensions.get("screen").width;
 
 const CustomDrawer = (props) => {
   const { signOut } = useContext(AuthContext);
+  const user = useSelector((state) => state.auth);
   const cats = useSelector((state) => state.products.categories);
+  const url = useSelector((state) => state.magazine.magazine);
+  const [magazineUrl, setMagazineUrl] = useState("");
+
+  useEffect(() => {
+    if (url.length > 0) {
+      setMagazineUrl(url[0].url);
+    }
+  }, [url]);
 
   return (
     <View style={styles.container}>
       <DrawerContentScrollView
         {...props}
-        contentContainerStyle={{ backgroundColor: "#888" }}
+        contentContainerStyle={{
+          backgroundColor: "#ccc",
+          minHeight: height + 150,
+        }}
       >
-        <ImageBackground
-          source={require("../../assets/profileImages/medium.jpg")}
-          style={{ padding: 20 }}
-        >
-          <Image
-            source={require("../../assets/profileImages/howling-red-OU2vFQCwCD0-unsplash.jpg")}
-            style={{
-              height: 60,
-              width: 60,
-              borderRadius: 30,
-              marginBottom: 10,
-            }}
-          />
-          <Text>Alan Luckett</Text>
-        </ImageBackground>
-
-        <View style={styles.drawerItems}>
-          <MenuItem
-            name="Home"
-            target="Home"
-            cat=""
-            navigation={props.navigation}
-            state={props.state}
-          />
-          <MenuItem
-            name="Member ID"
-            target="Member ID"
-            cat=""
-            navigation={props.navigation}
-            state={props.state}
-          />
-          <MenuItem
-            name="Categories"
-            target="Categories"
-            cat=""
-            navigation={props.navigation}
-            state={props.state}
-          />
-          {cats.map((data) => (
-            <MenuItem
-              key={data.id}
-              name={data.name}
-              target="category"
-              cat={data.name}
-              navigation={props.navigation}
-              state={props.state}
-              labelStyle={styles.categoryItems}
-              wrapperStyle={{ paddingVertical: 10 }}
-            />
-          ))}
-          <MenuItem
-            name="All discounts"
-            target="All Discounts"
-            cat=""
-            navigation={props.navigation}
-            state={props.state}
-          />
-          <MenuItem
-            name="Directory"
-            target="Directory"
-            cat=""
-            navigation={props.navigation}
-            state={props.state}
-          />
-          <MenuItem
-            name="Magazine"
-            target="Magazine"
-            cat=""
-            navigation={props.navigation}
-            state={props.state}
-          />
-        </View>
-        <View style={styles.bottomSection}>
-          <MenuItem
-            name="Profile Settings"
-            target="Profile"
-            cat=""
-            navigation={props.navigation}
-            state={props.state}
-          />
+        <View style={styles.navWrapper}>
           <TouchableOpacity
             onPress={() => {
-              signOut();
+              RootNavigation.navigate("Profile");
             }}
-            style={styles.bottomButtonsWrapper}
+            style={styles.headerContainer}
           >
-            <View style={styles.bottomButton}>
-              <Text style={styles.bottomButtonText}>Sign Out</Text>
+            <Image
+              source={{ uri: user?.imageUri }}
+              style={styles.userImage}
+              resizeMode="cover"
+              resizeMethod="resize"
+            />
+            <View style={styles.nameTextContainer}>
+              <Text style={styles.nameText}>
+                {user?.fname} {user?.lname}
+              </Text>
             </View>
           </TouchableOpacity>
+
+          <View style={styles.drawerItems}>
+            <MenuItem
+              name="Home"
+              target="Home"
+              cat=""
+              navigation={props.navigation}
+              state={props.state}
+            />
+            <MenuItem
+              name="Member ID"
+              target="Member ID"
+              cat=""
+              navigation={props.navigation}
+              state={props.state}
+            />
+            <MenuItem
+              name="Categories"
+              target="Categories"
+              cat=""
+              navigation={props.navigation}
+              state={props.state}
+            />
+            {cats.map((data) => (
+              <MenuItem
+                key={data.id}
+                name={data.name}
+                target="category"
+                cat={data.name}
+                navigation={props.navigation}
+                state={props.state}
+                labelStyle={styles.categoryItems}
+                wrapperStyle={{ paddingVertical: 10 }}
+              />
+            ))}
+            <MenuItem
+              name="All discounts"
+              target="category"
+              cat="all"
+              navigation={props.navigation}
+              state={props.state}
+            />
+            <MenuItem
+              name="Directory"
+              target="category"
+              cat="a-z"
+              navigation={props.navigation}
+              state={props.state}
+            />
+            <MenuItem
+              name="Magazine"
+              target={magazineUrl}
+              cat=""
+              external
+              navigation={props.navigation}
+              state={props.state}
+            />
+          </View>
+          <View style={styles.bottomSection}>
+            <TouchableOpacity
+              onPress={() => {
+                signOut();
+              }}
+              style={styles.bottomButtonsWrapper}
+            >
+              <View style={styles.bottomButton}>
+                <Text style={styles.bottomButtonText}>Sign Out</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
       </DrawerContentScrollView>
     </View>
@@ -125,16 +139,42 @@ const CustomDrawer = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: height + 50,
+  },
+  navWrapper: {
+    height: height,
+    backgroundColor: "black",
+    paddingBottom: 100,
+  },
+  headerContainer: {
+    paddingHorizontal: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomColor: Colors.accent,
+    borderBottomWidth: 2,
+    backgroundColor: "#ccc",
+  },
+  userImage: {
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    marginBottom: 10,
+  },
+  nameTextContainer: {
+    marginLeft: 20,
+    marginBottom: 12,
+  },
+  nameText: {
+    fontSize: 18,
   },
   drawerItems: {
-    flex: 1,
     backgroundColor: "#000",
     paddingTop: 10,
     color: "#fff",
   },
   bottomSection: {
     borderTopWidth: 1,
-    borderTopColor: "#ccc",
+    borderTopColor: Colors.accent,
     marginBottom: 80,
     backgroundColor: "#000",
   },
@@ -150,12 +190,12 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   bottomButtonText: {
-    fontSize: 15,
+    fontSize: width > 600 ? 20 : 15,
     color: "#fff",
   },
   categoryItems: {
     marginLeft: 30,
-    fontSize: 12,
+    fontSize: width > 600 ? 16 : 12,
   },
 });
 

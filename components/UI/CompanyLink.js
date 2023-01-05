@@ -1,20 +1,53 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 
+const width = Dimensions.get("screen").width;
+
 const CompanyLink = (props) => {
-  console.log({ props });
+  const year = props.end.substring(0, 4);
+  const month = props.end.substring(5, 7);
+  const day = props.end.substring(8, 10);
+  const date = day + "/" + month + "/" + year;
+
+  const length = width > 600 ? 40 : 18;
+  const namelength = width > 600 ? 45 : 24;
+
+  const town =
+    props.town.length > length
+      ? props.town.substring(0, length - 3) + "..."
+      : props.town;
+
+  const name =
+    props.name.length > namelength
+      ? props.name.substring(0, namelength - 3) + "..."
+      : props.name;
+
   return (
-    <TouchableOpacity style={styles.linkWrapper} onClick={props.onClick}>
+    <TouchableOpacity
+      style={styles.linkWrapper}
+      onPress={props.onSelect}
+      useForeground
+    >
       <View style={styles.mainInfoDisplay}>
         <View style={styles.textContainer}>
-          <Text style={styles.name}>{props.name}</Text>
+          <Text style={styles.name}>{name}</Text>
           <Text style={styles.text}>Offer: {props.offer}</Text>
-          <Text style={styles.text}>Valid Until: {props.validDate}</Text>
+          <Text style={styles.text}>Valid Until: {date}</Text>
           <Text style={styles.text}>
             <Entypo name="location-pin" size={18} color={Colors.accent} />
-            {props.town} {props.distance} miles
+            {town}
+            {props.distance
+              ? ", " + parseFloat(props.distance).toFixed(2) + " miles"
+              : "."}
           </Text>
         </View>
       </View>
@@ -33,82 +66,81 @@ const CompanyLink = (props) => {
   );
 };
 
-// offer = "10% off";
-// vaildDate = "December 2023";
-// town = "Milton Keynes";
-// distance = "23.5";
-// logoUrl =
-//   "https://disclosureapp.s3.eu-west-2.amazonaws.com/disclosure/offers_images/0fd761c1e298e1c89eb0730a3d6bf8a4.jpeg";
-// discountAvailable = "true";
-
 const styles = StyleSheet.create({
   linkWrapper: {
     position: "relative",
-    width: "90%",
-    maxWidth: 400,
-    height: 80,
+    width: "80%",
+    height: width > 600 ? 130 : 80,
     justifyContent: "center",
-    alignItems: "flex-end",
+    alignItems: "center",
+    alignSelf: "center",
     marginVertical: 20,
   },
   mainInfoDisplay: {
-    width: "90%",
+    width: width > 600 ? "90%" : "87%",
     height: "100%",
     borderWidth: 1,
     borderColor: "#888",
-    borderRadius: 40,
+    borderRadius: width > 600 ? 800 : 40,
     alignItems: "center",
+    marginLeft: 30,
   },
   textContainer: {
     height: "100%",
     width: "70%",
-    paddingVertical: 8,
+    paddingVertical: width > 600 ? 8 : 3,
   },
   name: {
     fontFamily: "Kollektif",
-    fontSize: 18,
+    fontSize: width > 600 ? 23 : 16,
     color: "#555",
-    paddingBottom: 5,
+    paddingBottom: width > 600 ? 10 : 2,
   },
   text: {
     fontFamily: "Kollektif",
-    fontSize: 12,
+    fontSize: width > 600 ? 16 : 12,
     color: "#333",
+    paddingBottom: width > 600 ? 8 : 0,
   },
   location: {
     fontFamily: "Kollektif",
-    fontSize: 18,
+    fontSize: width > 600 ? 16 : 12,
     color: "#555",
   },
   logoContainer: {
     position: "absolute",
-    left: 8,
-    top: 5,
-    height: 70,
-    width: 70,
-    borderWidth: 1,
-    borderColor: "#888",
-    borderRadius: 40,
+    left: 0,
+    top: width > 600 ? 10 : 5,
+    height: width > 600 ? 120 : 70,
+    width: width > 600 ? 120 : 70,
+    borderRadius: width > 600 ? 70 : 40,
   },
   imageThumbnail: {
-    height: 70,
-    width: 70,
-    borderRadius: 35,
+    height: width > 600 ? 110 : 70,
+    width: width > 600 ? 110 : 70,
+    borderRadius: width > 600 ? 70 : 35,
+    borderWidth: 1,
+    borderColor: "#888",
   },
   iconContainer: {
     position: "absolute",
-    right: 0,
+    right: width > 600 ? 10 : 0,
     top: -15,
-    height: 40,
-    width: 40,
+    height: width > 600 ? 60 : 40,
+    width: width > 600 ? 60 : 40,
     borderWidth: 1,
     borderColor: Colors.accent,
-    borderRadius: 20,
+    borderRadius: width > 600 ? 30 : 20,
   },
   iconThumbnail: {
-    height: 35,
-    width: 35,
-    borderRadius: 20,
+    height: width > 600 ? 50 : 35,
+    width: width > 600 ? 50 : 35,
+    borderRadius: width > 600 ? 15 : 10,
+  },
+  distanceWrapper: {
+    flexDirection: "row",
+    alignContent: "center",
+    flexWrap: "wrap",
   },
 });
 

@@ -23,12 +23,6 @@ const Categories = () => {
     return (
       <View>
         <Text style={styles.title}>Categories</Text>
-        <Divider
-          orientation="vertical"
-          color={Colors.primary}
-          style={{ width: "80%", margin: 20, color: "red" }}
-          width="6"
-        />
       </View>
     );
   };
@@ -71,7 +65,7 @@ const Categories = () => {
                   />
                 </View>
                 <View style={styles.textContainer}>
-                  <Text>{item.name}</Text>
+                  <Text style={styles.itemText}>{item.name}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -85,13 +79,13 @@ const Categories = () => {
 const styles = StyleSheet.create({
   imageContainer: {
     margin: 1,
-    maxWidth: 100,
+    maxWidth: width > 600 ? 200 : 100,
   },
   imageThumbnail: {
     backgroundColor: "white",
     width: (width - 100) / 3,
-    height: 100,
-    resizeMode: "cover",
+    height: width > 600 ? 200 : 100,
+    resizeMode: "contain",
   },
   center: {
     flex: 1,
@@ -110,8 +104,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "column",
     width: (width - 100) / 3,
-    maxWidth: 100,
+    maxWidth: width > 600 ? 250 : 100,
     marginHorizontal: 10,
+  },
+  itemText: {
+    fontSize: width > 600 ? 25 : 14,
   },
 });
 

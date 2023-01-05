@@ -1,88 +1,218 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  Dimensions,
+} from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import * as RootNavigation from "../navigation/RootNavigation";
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import * as productsActions from "../store/actions/products";
-import * as auth from "../store/actions/auth";
 
 import CompanyLink from "../components/UI/CompanyLink";
+import Colors from "../constants/Colors";
 
-const Category = ({ route }) => {
+const width = Dimensions.get("screen").width;
+
+function useAsyncRef(ref) {
+  const value = useRef(ref);
+  const [, forceRender] = useState(false);
+
+  function updateValue(newState) {
+    value.current = newState;
+    forceRender((s) => !s);
+  }
+  return [value, updateValue];
+}
+
+const Category = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth);
   const products = useSelector((state) => state.products.availableProducts);
   const maxCount = useSelector((state) => state.products.count);
+  const location = useSelector((state) => state.location);
+
+  const category = useSelector((state) =>
+    state.products.categories.find((cat) => cat.name === props.route.params.cat)
+  );
+  console.log("category page", props.route.params.cat);
   const [page, setPage] = useState(1);
+  const [long, setLong] = useAsyncRef();
+  const [lat, setLat] = useAsyncRef();
+  const [name, setName] = useAsyncRef();
+  const [url, setUrl] = useAsyncRef();
+  const [cat, setCat] = useAsyncRef();
+  const [filter, setFilter] = useAsyncRef("");
 
   useEffect(() => {
-    setTimeout(async () => {
-      let userToken;
-      userToken = null;
-      try {
-        userToken = await AsyncStorage.getItem("userToken");
-      } catch (e) {
-        console.log({ e });
-      }
+    setLong(location?.long);
+    setLat(location?.lat);
+    setName(category?.name);
+    setCat(props.route.params.cat);
+    setUrl(category?.url);
 
-      const { idToken } = JSON.parse(userToken);
-
-      dispatch(auth.reRegister(JSON.parse(userToken)));
-      dispatch(
-        productsActions.fetchProducts(
-          0, //Long
-          0, //Lat
-          "", //Filter
-          "", //Search Value
-          page,
-          route.params.cat, //Category
-          idToken,
-          "clear"
-        )
+    if (props.route.params.cat === "a-z") {
+      setLong(0);
+      setLat(0);
+      setCat("");
+      setName("A-Z Directory");
+      setUrl(
+        "https://disclosureapp.s3.eu-west-2.amazonaws.com/disclosure/uploaded_images/all.png"
       );
-    }, 1);
-  }, [route.params.cat, page]);
+    }
+    if (props.route.params.cat === "all") {
+      setLong(0);
+      setLat(0);
+      setCat("");
+      setName("All Discounts");
+      setUrl(
+        "https://disclosureapp.s3.eu-west-2.amazonaws.com/disclosure/uploaded_images/all.png"
+      );
+      setFilter("discount_code");
+    }
+    if (props.route.params.cat === "All categories") {
+      setCat("");
+    }
+  }, [location, category]);
+
+  const fetchProducts = (clear) => {
+    dispatch(
+      productsActions.fetchProducts(
+        long.current, //Long
+        lat.current, //Lat
+        filter.current, //Filter
+        "", //Filter Value
+        "", //Search Value
+        page,
+        cat.current, //Category
+        user.token,
+        clear
+      )
+    );
+  };
+
+  useEffect(() => {
+    if (user?.token && location?.long) {
+      if (page === 1) {
+        fetchProducts(true);
+      } else {
+        fetchProducts(false);
+      }
+    }
+  }, [user, page, maxCount, location]);
+
+  const fetchMoreData = () => {
+    if (maxCount > products.length) {
+      setPage(page + 1);
+    }
+    console.log("fetch data");
+  };
+
+  const selectItemHandler = (item) => {
+    props.navigation.navigate("CompanyDetails", {
+      company: item,
+    });
+  };
+
+  const renderHeader = () => (
+    <View style={styles.headerContainer}>
+      <View style={styles.headerImageContainer}>
+        <Image style={styles.imageThumbnail} source={{ uri: url.current }} />
+      </View>
+      <Text style={styles.headerText}>{name.current}</Text>
+    </View>
+  );
+
+  const renderFooter = () => (
+    <View style={styles.footerContainer}>
+      <View style={styles.footerLine}></View>
+    </View>
+  );
+
+  const renderEmpty = () => (
+    <View style={styles.emptyTextContainer}>
+      <Text style={styles.emptyText}>
+        No companies available to display currently
+      </Text>
+    </View>
+  );
+  if (!products) {
+    return (
+      <View>
+        <Text>Loading, please wait </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.center}>
-      <Text>This is Category and the category = {route.params.cat}</Text>
-      <CompanyLink
-        name="Simply Race"
-        offer="10% off"
-        validDate="December 2023"
-        town="Milton Keynes"
-        distance="23.5"
-        logoUrl="https://disclosureapp.s3.eu-west-2.amazonaws.com/disclosure/offers_images/0fd761c1e298e1c89eb0730a3d6bf8a4.jpeg"
-        discountAvailable="true"
+      <FlatList
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
+        data={products}
+        renderItem={({ item }) => (
+          <CompanyLink
+            name={item.name}
+            offer={item.offer}
+            end={item.end}
+            town={item.town}
+            distance={item.distance}
+            logoUrl={item.imageUrl}
+            discountAvailable={item.discountCode ? true : false}
+            onSelect={() => {
+              selectItemHandler(item);
+            }}
+          />
+        )}
+        ListHeaderComponent={renderHeader}
+        ListFooterComponent={renderFooter}
+        ListEmptyComponent={renderEmpty}
+        onEndReachedThreshold={0.2}
+        onEndReached={fetchMoreData}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  navContainer: {
-    position: "absolute",
-    alignItems: "center",
-    bottom: 0,
-  },
-  bottomTabButtons: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    width: "100%",
-    backgroundColor: "#000",
-    height: 80,
-    paddingTop: 10,
-  },
   center: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
     textAlign: "center",
   },
-  iconBehave: {
-    padding: 14,
+  headerContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: width > 600 ? 30 : 10,
+  },
+  headerImageContainer: {},
+  imageThumbnail: {
+    width: width > 600 ? 200 : 100,
+    height: width > 600 ? 200 : 100,
+  },
+  headerText: {
+    fontSize: width > 600 ? 38 : 22,
+    fontFamily: "Kollektif",
+  },
+  footerContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: width > 600 ? 30 : 10,
+  },
+  footerLine: {
+    width: "80%",
+    borderBottomWidth: 2,
+    borderColor: Colors.accent,
+  },
+  emptyTextContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 20,
+  },
+  emptyText: {
+    fontSize: width > 600 ? 20 : 14,
+    fontFamily: "Kollektif",
   },
 });
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useReducer } from "react";
 import { StatusBar } from "expo-status-bar";
 
-//import { createStore, combineReducers, applyMiddleware } from "redux";
 import { Provider, useSelector, connect } from "react-redux";
 import ReduxThunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
@@ -20,6 +19,8 @@ import { AuthStackNavigator } from "./navigation/StackNavigator";
 
 import authReducer from "./store/reducers/auth";
 import productsReducer from "./store/reducers/products";
+import locationReducer from "./store/reducers/location";
+import magazineReducer from "./store/reducers/magazine";
 
 import { ActivityIndicator, View } from "react-native";
 
@@ -28,8 +29,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const rootReducer = combineReducers({
   products: productsReducer,
   auth: authReducer,
-  //magazine: magazineReducer,
-  //location: locationReducer
+  magazine: magazineReducer,
+  location: locationReducer,
 });
 
 const middleware = [ReduxThunk];

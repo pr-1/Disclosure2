@@ -1,7 +1,15 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import Colors from "../../constants/Colors";
 import * as Linking from "expo-linking";
+
+const width = Dimensions.get("screen").width;
 
 const MenuItem = (props) => {
   return (
@@ -41,7 +49,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   bottomButtonText: {
-    fontSize: 15,
+    fontSize: width > 600 ? 22 : 15,
     color: "#fff",
   },
   bottomButtonsWrapper: {

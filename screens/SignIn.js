@@ -16,8 +16,6 @@ import { Feather } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AuthContext } from "../components/context";
-import Users from "../model/users";
-import * as api from "../utils/api";
 import * as auth from "../store/actions/auth";
 
 const emailRegex =
@@ -32,6 +30,13 @@ const SignInScreen = ({ navigation }) => {
     isValidUser: true,
     isValidPassword: true,
   });
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert("An error occured", error, [{ text: "Ok" }]);
+    }
+  }, [error]);
 
   const { signIn } = useContext(AuthContext);
   const dispatch = useDispatch();
@@ -105,6 +110,7 @@ const SignInScreen = ({ navigation }) => {
       try {
         foundUser = await dispatch(auth.login(email, password));
       } catch (err) {
+        setError(err.message);
         console.log({ err });
       }
     }

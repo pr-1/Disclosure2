@@ -12,22 +12,11 @@ import Home from "../screens/Home";
 import MemberId from "../screens/MemberId";
 import Categories from "../screens/Categories";
 import Category from "../screens/Category";
-import Discounts from "../screens/Discounts";
-import Directory from "../screens/Directory";
-import Magazine from "../screens/Magazine";
 import Profile from "../screens/Profile";
+import CompanyDetails from "../screens/CompanyDetails";
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
-
-// const categories = [
-//   { cat: "All Categories" },
-//   { cat: "Homes" },
-//   { cat: "Food & Drink" },
-//   { cat: "Health & Lifestyle" },
-//   { cat: "Hair & Beauty" },
-//   { cat: "Family & Events" },
-// ];
 
 function LogoTitle() {
   return (
@@ -50,11 +39,10 @@ const drawerOptions = {
   drawerActiveTintColor: "#fff",
   drawerInactiveTintColor: "#fff",
   drawerItemStyle: { marginLeft: 20 },
+  unmountOnBlur: true,
   headerTitle: (props) => <LogoTitle {...props} />,
   headerRight: () => (
-    <TouchableOpacity
-      onPress={() => RootNavigation.navigate("Member ID", { userName: "Lucy" })}
-    >
+    <TouchableOpacity onPress={() => RootNavigation.navigate("Home")}>
       <Image
         style={{ width: 35, height: 35 }}
         source={require("../assets/icons/Home_icon.png")}
@@ -75,6 +63,7 @@ const dynamicOptionsList = {
   drawerActiveTintColor: "#fff",
   drawerInactiveTintColor: "#fff",
   drawerItemStyle: { marginLeft: 50 },
+  unmountOnBlur: true,
   headerTitle: (props) => <LogoTitle {...props} />,
   headerRight: () => (
     <TouchableOpacity
@@ -102,28 +91,16 @@ const MainDrawerNavigator = () => {
         component={Categories}
         options={drawerOptions}
       />
-      {/* {categories.map((data) => (
-        <Drawer.Screen
-          key={data.cat}
-          name={data.cat}
-          component={Category}
-          initialParams={{ cat: data.cat }}
-          options={dynamicOptionsList}
-        />
-      ))} */}
       <Drawer.Screen
         name="All Discounts"
-        component={Discounts}
+        component={Category}
+        initialParams={{ cat: "all" }}
         options={drawerOptions}
       />
       <Drawer.Screen
         name="Directory"
-        component={Directory}
-        options={drawerOptions}
-      />
-      <Drawer.Screen
-        name="Magazine"
-        component={Magazine}
+        component={Category}
+        initialParams={{ cat: "a-z" }}
         options={drawerOptions}
       />
       <Drawer.Screen
@@ -134,6 +111,11 @@ const MainDrawerNavigator = () => {
       <Drawer.Screen
         name="Profile"
         component={Profile}
+        options={drawerOptions}
+      />
+      <Drawer.Screen
+        name="CompanyDetails"
+        component={CompanyDetails}
         options={drawerOptions}
       />
     </Drawer.Navigator>

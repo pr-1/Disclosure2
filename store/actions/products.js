@@ -11,6 +11,7 @@ export const fetchProducts = (
   longitude,
   latitiude,
   filter,
+  filterValue,
   value,
   page,
   category,
@@ -27,7 +28,17 @@ export const fetchProducts = (
     clear = true;
     page = 1;
   }
-
+  console.log(
+    { longitude },
+    { latitiude },
+    { filter },
+    { filterValue },
+    { value },
+    { page },
+    { category },
+    { token },
+    { clear }
+  );
   return async (dispatch) => {
     const response = await fetch(
       "https://app.disclosurediscounts.co.uk/api/v2/companies/distance",
@@ -45,6 +56,7 @@ export const fetchProducts = (
           longitude: longitude,
           latitude: latitiude,
           filter: filter,
+          filtervalue: filterValue,
           value: value,
           page: page,
           category: category,
@@ -58,7 +70,7 @@ export const fetchProducts = (
 
     const resData = await response.json();
     const loadedProducts = [];
-    console.log(resData);
+    console.log({ resData });
     for (const key in resData.companies) {
       loadedProducts.push({
         id: resData.companies[key].company_id,
@@ -73,7 +85,7 @@ export const fetchProducts = (
         description: resData.companies[key].offer_desc,
         start: resData.companies[key].start_date,
         end: resData.companies[key].end_date,
-        distane: resData.companies[key].distance,
+        distance: resData.companies[key].distance,
         bottomImge1: resData.companies[key].bottom_image_1,
         bottomImge2: resData.companies[key].bottom_image_2,
         logo: resData.companies[key].logo_url,
@@ -82,6 +94,9 @@ export const fetchProducts = (
         facebook: resData.companies[key].facebook,
         twitter: resData.companies[key].twitter,
         instagram: resData.companies[key].instagram,
+        featured: resData.companies[key].featured,
+        discountCode: resData.companies[key].discount_code,
+        backgroundImage: resData.companies[key].background_image,
       });
     }
 
@@ -98,7 +113,6 @@ export const fetchProducts = (
 };
 
 export const fetchCategories = () => {
-  console.log("getting Categories");
   return async (dispatch) => {
     const response = await fetch(
       "https://app.disclosurediscounts.co.uk/api/v2/companies/categories",
@@ -118,8 +132,6 @@ export const fetchCategories = () => {
     }
     const resData = await response.json();
 
-    console.log({ resData });
-
     const productCategories = [];
     productCategories.push({
       id: "0",
@@ -134,7 +146,6 @@ export const fetchCategories = () => {
       });
     }
 
-    console.log({ productCategories });
     dispatch({
       type: SET_CATEGORIES,
       categories: productCategories,

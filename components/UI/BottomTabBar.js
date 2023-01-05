@@ -1,7 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { useSelector } from "react-redux";
+import * as Linking from "expo-linking";
 
 const BottomTabBar = ({ navigation }) => {
+  const url = useSelector((state) => state.magazine.magazine);
+  const [magazineUrl, setMagazineUrl] = useState("");
+
+  useEffect(() => {
+    if (url.length > 0) {
+      setMagazineUrl(url[0].url);
+    }
+  }, [url]);
+
   return (
     <>
       <View style={styles.navContainer}>
@@ -27,7 +38,7 @@ const BottomTabBar = ({ navigation }) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate("Magazine")}
+            onPress={() => Linking.openURL(magazineUrl)}
             style={styles.iconBehave}
           >
             <Image

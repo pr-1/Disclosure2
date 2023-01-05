@@ -47,7 +47,6 @@ export const authenticate = (
 
 export const reRegister = (foundUser) => {
   return async (dispatch) => {
-    console.log("re register", { foundUser });
     dispatch(
       authenticate(
         foundUser.localId,
@@ -208,7 +207,7 @@ export const update = (
       }
 
       const resData = await response.json();
-      console.log(resData);
+
       dispatch(
         authenticate(
           resData.localId,
@@ -358,8 +357,6 @@ export const verifyCode = (code) => {
 };
 
 export const login = (email, password) => {
-  console.log({ email }, { password });
-  console.log(`${API_URL}/users/login/`);
   return async (dispatch) => {
     const response = await fetch(`${API_URL}/users/login`, {
       headers: {
@@ -413,21 +410,6 @@ export const login = (email, password) => {
       )
     );
     return { resData };
-
-    // saveDataToStorage(
-    //   resData.idToken,
-    //   resData.localId,
-    //   resData.fname,
-    //   resData.lname,
-    //   resData.phone,
-    //   resData.email,
-    //   resData.postcode,
-    //   resData.image_uri,
-    //   resData.dob,
-    //   resData.gender,
-    //   resData.mailingList,
-    //   resData.expires
-    // );
   };
 };
 export const resetPassword = (email) => {
