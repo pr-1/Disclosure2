@@ -91,6 +91,8 @@ const Home = () => {
         console.log({ e });
       }
 
+      console.log("on home screen", JSON.parse(userToken));
+
       dispatch(auth.reRegister(JSON.parse(userToken)));
       dispatch(magazineActions.getInitial());
       dispatch(productsActions.fetchCategories());

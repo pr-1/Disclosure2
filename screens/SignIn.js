@@ -13,7 +13,7 @@ import {
 import * as colours from "../constants/Colors";
 import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { AuthContext } from "../components/context";
 import * as auth from "../store/actions/auth";

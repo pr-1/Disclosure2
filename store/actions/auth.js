@@ -22,7 +22,8 @@ export const authenticate = (
   dob,
   gender,
   mailingList,
-  expires
+  expires,
+  createdOn
 ) => {
   return (dispatch) => {
     dispatch({
@@ -39,6 +40,7 @@ export const authenticate = (
       gender: gender,
       mailingList: mailingList,
       expires: expires,
+      createdOn: createdOn,
     });
 
     return null;
@@ -46,6 +48,7 @@ export const authenticate = (
 };
 
 export const reRegister = (foundUser) => {
+  console.log({ foundUser });
   return async (dispatch) => {
     dispatch(
       authenticate(
@@ -60,7 +63,8 @@ export const reRegister = (foundUser) => {
         foundUser.dob,
         foundUser.gender,
         foundUser.mailingList,
-        foundUser.expires
+        foundUser.expires,
+        foundUser.created_at
       )
     );
   };
@@ -221,7 +225,8 @@ export const update = (
           resData.dob,
           resData.gender,
           resData.mailingList,
-          resData.expires
+          resData.expires,
+          resData.created_at
         )
       );
 
@@ -237,7 +242,8 @@ export const update = (
         resData.dob,
         resData.gender,
         resData.mailingList,
-        resData.expires
+        resData.expires,
+        resData.created_at
       );
     }
   };
@@ -335,7 +341,8 @@ export const verifyCode = (code) => {
         resData.dob,
         resData.gender,
         resData.mailingList,
-        resData.expires
+        resData.expires,
+        resData.created_at
       )
     );
 
@@ -351,7 +358,8 @@ export const verifyCode = (code) => {
       resData.dob,
       resData.gender,
       resData.mailingList,
-      resData.expires
+      resData.expires,
+      resData.created_at
     );
   };
 };
@@ -406,7 +414,8 @@ export const login = (email, password) => {
         resData.dob,
         resData.gender,
         resData.mailingList,
-        resData.expires
+        resData.expires,
+        resData.created_at
       )
     );
     return { resData };
@@ -492,7 +501,8 @@ export const changePassword = (password1, token) => {
         resData.dob,
         resData.gender,
         resData.mailingList,
-        resData.expires
+        resData.expires,
+        resData.created_at
       )
     );
 
@@ -508,7 +518,8 @@ export const changePassword = (password1, token) => {
       resData.dob,
       resData.gender,
       resData.mailingList,
-      resData.expires
+      resData.expires,
+      resData.created_at
     );
   };
 };
@@ -567,7 +578,8 @@ const saveDataToStorage = (
   dob,
   gender,
   mailingList,
-  expires
+  expires,
+  createdOn
 ) => {
   AsyncStorage.setItem(
     "userDataUniqueKey",
@@ -584,6 +596,7 @@ const saveDataToStorage = (
       gender: gender,
       mailingList: mailingList,
       expires: expires,
+      createdOn,
     })
   );
 };

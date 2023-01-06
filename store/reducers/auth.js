@@ -14,6 +14,7 @@ const initialState = {
   gender: null,
   mailingList: false,
   expires: null,
+  createdOn: null,
 };
 
 export default (state = initialState, action) => {
@@ -33,6 +34,7 @@ export default (state = initialState, action) => {
         gender: action.gender,
         mailingList: action.mailingList,
         expires: action.expires,
+        createdOn: action.createdOn,
       };
     case LOGOUT:
       return initialState;
