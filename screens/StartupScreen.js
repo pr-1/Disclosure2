@@ -12,6 +12,7 @@ import {
   Animated,
 } from "react-native";
 import * as colours from "../constants/Colors";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const StartupScreen = ({ navigation }) => {
   const logoAnimationValue = useRef(new Animated.Value(0)).current;
@@ -23,6 +24,21 @@ const StartupScreen = ({ navigation }) => {
       duration: 500,
       useNativeDriver: true,
     }).start();
+  }, []);
+
+  useEffect(() => {
+    async function getValidateToken() {
+      let validate = null;
+      try {
+        validate = await AsyncStorage.getItem("validateToken");
+      } catch (e) {
+        console.log({ e });
+      }
+      if (validate) {
+        navigation.navigate("Validate");
+      }
+    }
+    getValidateToken();
   }, []);
 
   return (

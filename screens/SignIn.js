@@ -114,13 +114,6 @@ const SignInScreen = ({ navigation }) => {
         console.log({ err });
       }
     }
-
-    if (foundUser.length == 0) {
-      Alert.alert("Invalid User!", "Email or Password is incorrect", [
-        { text: "Okay" },
-      ]);
-      return;
-    }
     signIn(foundUser);
   };
 
@@ -203,14 +196,9 @@ const SignInScreen = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => navigation.navigate("SignUp")}
-              style={[
-                styles.siginIn,
-                {
-                  backgroundColor: "#fff",
-                },
-              ]}
+              style={styles.siginIn}
             >
-              <Text>Sign Up</Text>
+              <Text>No account? Sign up here.</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -271,6 +259,7 @@ const styles = StyleSheet.create({
   },
   action: {
     flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#f2f2f2",

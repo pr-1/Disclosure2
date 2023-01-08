@@ -106,9 +106,16 @@ const App = () => {
         }
         dispatch({ type: "LOGOUT" });
       },
-      SignUp: () => {
-        setUserToken("fgkj");
-        SplashScreen.hideAsync();
+      signUp: async (foundUser) => {
+        try {
+          await AsyncStorage.setItem(
+            "validateToken",
+            JSON.stringify(foundUser.resData)
+          );
+          console.log("inside validate try", { foundUser });
+        } catch (e) {
+          console.log({ e });
+        }
       },
     }),
     []

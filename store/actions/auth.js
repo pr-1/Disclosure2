@@ -294,10 +294,16 @@ export const signup = (
       }
 
       throw new Error(message);
+    } else {
+      const resData = await response.json();
+
+      console.log({ resData });
+
+      return { resData };
     }
-    const resData = await response.json();
   };
 };
+
 export const verifyCode = (code) => {
   return async (dispatch) => {
     const response = await fetch(`${API_URL}/users/verifycode`, {
@@ -324,43 +330,27 @@ export const verifyCode = (code) => {
         message = "Invalid code";
       }
       throw new Error(message);
+    } else {
+      const resData = await response.json();
+
+      dispatch(
+        authenticate(
+          resData.localId,
+          resData.idToken,
+          resData.email,
+          resData.phone,
+          resData.fname,
+          resData.lname,
+          resData.postcode,
+          resData.image_uri,
+          resData.dob,
+          resData.gender,
+          resData.mailingList,
+          resData.expires,
+          resData.created_at
+        )
+      );
     }
-
-    const resData = await response.json();
-
-    dispatch(
-      authenticate(
-        resData.localId,
-        resData.idToken,
-        resData.email,
-        resData.phone,
-        resData.fname,
-        resData.lname,
-        resData.postcode,
-        resData.image_uri,
-        resData.dob,
-        resData.gender,
-        resData.mailingList,
-        resData.expires,
-        resData.created_at
-      )
-    );
-
-    saveDataToStorage(
-      resData.idToken,
-      resData.localId,
-      resData.fname,
-      resData.lname,
-      resData.phone,
-      resData.email,
-      resData.postcode,
-      resData.image_uri,
-      resData.dob,
-      resData.gender,
-      resData.mailingList,
-      resData.expires,
-      resData.created_at
-    );
   };
 };
 
@@ -395,30 +385,29 @@ export const login = (email, password) => {
       }
 
       throw new Error(message);
+    } else {
+      const resData = await response.json();
+      console.log({ resData });
+
+      dispatch(
+        authenticate(
+          resData.localId,
+          resData.idToken,
+          resData.email,
+          resData.phone,
+          resData.fname,
+          resData.lname,
+          resData.postcode,
+          resData.image_uri,
+          resData.dob,
+          resData.gender,
+          resData.mailingList,
+          resData.expires,
+          resData.created_at
+        )
+      );
+      return { resData };
     }
-
-    const resData = await response.json();
-
-    console.log({ resData });
-
-    dispatch(
-      authenticate(
-        resData.localId,
-        resData.idToken,
-        resData.email,
-        resData.phone,
-        resData.fname,
-        resData.lname,
-        resData.postcode,
-        resData.image_uri,
-        resData.dob,
-        resData.gender,
-        resData.mailingList,
-        resData.expires,
-        resData.created_at
-      )
-    );
-    return { resData };
   };
 };
 export const resetPassword = (email) => {

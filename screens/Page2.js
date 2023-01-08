@@ -3,7 +3,7 @@
 import React from "react";
 import { View, Button, Text, StyleSheet, Pressable } from "react-native";
 
-const Page2 = ({ navigation, route }) => {
+const Page2 = ({ route }) => {
   return (
     <View style={styles.center}>
       <Text>This is Page 2 and the category = {route.params.cat}</Text>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -10,14 +10,18 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Alert,
+  Button,
 } from "react-native";
-import * as colours from "../constants/Colors";
-import { FontAwesome } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
+import * as Colors from "../constants/Colors";
+import { Entypo, FontAwesome, Fontisto, Feather } from "@expo/vector-icons";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import * as api from "../utils/api";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { RadioButton } from "react-native-paper";
+import * as auth from "../store/actions/auth";
+import AsyncAlert from "../components/UI/AsyncAlert";
+import { AuthContext } from "../components/context";
 
-let nameArr = [];
 let fname;
 let lname;
 
@@ -62,6 +66,9 @@ const SignUp = ({ navigation }) => {
     email: "",
     phone: "",
     postcode: "",
+    dob: "",
+    gender: "",
+    mailinglist: false,
     password: "",
     confirmPassword: "",
     passwordStrength: 0,
@@ -79,9 +86,61 @@ const SignUp = ({ navigation }) => {
     isValidPostcode: true,
     isValidPassword: true,
     isValidPasswordMatch: true,
+    isValidDateOfBirth: true,
+    isValidGender: true,
   });
-
+  const { signUp } = useContext(AuthContext);
+  const dispatch = useDispatch();
   const [form, setForm] = useState(false);
+  const [datePicker, setDatePicker] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [gender, setGender] = useState();
+  const [mailingList, setMailingList] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function customAlert() {
+      if (error) {
+        // Alert.alert("An error occured", error, [{ text: "Ok" }]);
+        await AsyncAlert("An error occured", error);
+        if (error === "This email exists already") {
+          navigation.navigate("SignIn");
+        }
+      }
+    }
+
+    customAlert();
+  }, [error]);
+
+  const checkBoxHandler = () => {
+    setMailingList(!mailingList);
+    setData({
+      ...data,
+      mailinglist: !data.mailinglist,
+    });
+  };
+
+  function showDatePicker() {
+    setDatePicker(true);
+  }
+
+  function onDateSelected(event, value) {
+    setDate(value);
+    setData({
+      ...data,
+      dob: value,
+      isValidDateOfBirth: true,
+    });
+    setDatePicker(false);
+  }
+
+  useEffect(() => {
+    setData({
+      ...data,
+      gender: gender,
+      isValidGender: true,
+    });
+  }, [gender]);
 
   const textInputChange = (val, type) => {
     switch (type) {
@@ -359,10 +418,6 @@ const SignUp = ({ navigation }) => {
       });
     }
   }, [data.password, data.confirmPassword]);
-  console.log(
-    { data },
-    data.confirmPassword === "" || data.check_passwordInputChange
-  );
 
   useEffect(() => {
     if (
@@ -370,7 +425,9 @@ const SignUp = ({ navigation }) => {
       data.check_textInputChange &&
       data.check_phoneInputChange &&
       data.check_postcodeInputChange &&
-      data.check_passwordInputChange
+      data.check_passwordInputChange &&
+      data.dob &&
+      data.gender
     ) {
       setForm(true);
     } else {
@@ -378,13 +435,39 @@ const SignUp = ({ navigation }) => {
     }
   }, [data]);
 
-  const signUpHandler = () => {
+  const signUpHandler = async () => {
+    if (data.dob === "") {
+      setData({ ...data, isValidDateOfBirth: false });
+    }
+    if (data.gender === "") {
+      setData({ ...data, isValidGender: false });
+    }
     if (form && data.passwordStrength != "red") {
       console.log({ data }, { form });
+      try {
+        const response = await dispatch(
+          auth.signup(
+            data.fname,
+            data.lname,
+            data.email,
+            data.phone,
+            data.password,
+            data.postcode.toUpperCase(),
+            data.dob,
+            data.gender,
+            data.mailinglist
+          )
+        );
+
+        console.log({ response });
+        signUp(response);
+
+        navigation.navigate("Validate");
+      } catch (err) {
+        setError(err.message);
+      }
     } else {
-      Alert.alert("Incorrect Information!", "Please correct the errors", [
-        { text: "Okay" },
-      ]);
+      setError("Incorrect Information!", "Please correct the errors");
     }
   };
 
@@ -394,7 +477,16 @@ const SignUp = ({ navigation }) => {
         source={require("../assets/background.png")}
         style={styles.backgroundImage}
       >
-        <KeyboardAwareScrollView>
+        <KeyboardAwareScrollView
+          behaviour="padding"
+          scrollEnabled={true}
+          enableAutoAutomaticScroll={Platform.OS === "ios"}
+          keyboardVerticalOffset={150}
+          enableOnAndroid={true}
+          contentContainerStyle={{ flexGrow: 1 }}
+          style={styles.screen}
+          keyboardShouldPersistTaps="always"
+        >
           <View style={styles.formWrapper}>
             <View style={styles.formContainer}>
               <Text style={styles.title}>Sign Up</Text>
@@ -406,7 +498,7 @@ const SignUp = ({ navigation }) => {
                   <TextInput
                     placeholder="Your full name"
                     style={styles.textInput}
-                    autoCapitalize="none"
+                    autoCapitalize="words"
                     onChangeText={(val) => textInputChange(val, "name")}
                     onEndEditing={(e) => handleValidName(e.nativeEvent.text)}
                   />
@@ -430,6 +522,8 @@ const SignUp = ({ navigation }) => {
                     placeholder="Your Email"
                     style={styles.textInput}
                     autoCapitalize="none"
+                    keyboardType="email-address"
+                    textContentType="emailAddress"
                     onChangeText={(val) => textInputChange(val, "email")}
                     onEndEditing={(e) => handleValidEmail(e.nativeEvent.text)}
                   />
@@ -472,7 +566,7 @@ const SignUp = ({ navigation }) => {
                   <TextInput
                     placeholder="Postcode"
                     style={styles.textInput}
-                    autoCapitalize="none"
+                    autoCapitalize="characters"
                     onChangeText={(val) => textInputChange(val, "postcode")}
                     onEndEditing={(e) =>
                       handleValidPostcode(e.nativeEvent.text)
@@ -486,6 +580,154 @@ const SignUp = ({ navigation }) => {
                 {data.isValidPostcode ? null : (
                   <Text style={styles.errorMsg}>Invalid postcode format.</Text>
                 )}
+              </View>
+              <View style={styles.inputWrapper}>
+                <Text style={[styles.footer, { marginTop: 25 }]}>
+                  Date of Birth
+                </Text>
+                <View>
+                  <TouchableOpacity
+                    onPress={showDatePicker}
+                    style={styles.dobAction}
+                  >
+                    <Fontisto name="date" size={20} />
+
+                    <Text style={data.dob ? styles.textInput : styles.text}>
+                      {data.dob ? date.toDateString() : "Date of Birth"}
+                    </Text>
+                  </TouchableOpacity>
+
+                  {datePicker && (
+                    <>
+                      <DateTimePicker
+                        value={date}
+                        mode="date"
+                        display={Platform.OS === "ios" ? "inline" : "default"}
+                        onChange={onDateSelected}
+                        style={styles.datePicker}
+                        maximumDate={new Date()}
+                      />
+                      {Platform.OS === "ios" && (
+                        <Button
+                          title="Close"
+                          onPress={() => {
+                            setDatePicker(false);
+                          }}
+                        />
+                      )}
+                    </>
+                  )}
+                </View>
+
+                {data.isValidDateOfBirth ? null : (
+                  <Text style={styles.errorMsg}>Invalid date of birth.</Text>
+                )}
+              </View>
+
+              <View style={styles.inputWrapper}>
+                <Text style={[styles.footer, { marginTop: 25 }]}>
+                  Gender (Click to select)
+                </Text>
+
+                <View style={styles.action}>
+                  <Fontisto name="transgender-alt" size={20} />
+                  <View style={styles.radioButtonContainer}>
+                    <View style={styles.genderButtons}>
+                      <RadioButton
+                        uncheckedColor="black"
+                        color={Colors.accent}
+                        value="male"
+                        label="Male"
+                        status={gender === "male" ? "checked" : "unchecked"}
+                        onPress={() => {
+                          setGender("male");
+                        }}
+                      />
+                      <TouchableOpacity
+                        style={styles.genderButtonLabel}
+                        onPress={() => {
+                          setGender("male");
+                        }}
+                      >
+                        <Text style={styles.genderButtonLabelText}>Male</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.genderButtons}>
+                      <RadioButton
+                        uncheckedColor="black"
+                        color={Colors.accent}
+                        label="Female"
+                        value="female"
+                        status={gender === "female" ? "checked" : "unchecked"}
+                        onPress={() => {
+                          setGender("female");
+                        }}
+                      />
+                      <TouchableOpacity
+                        style={styles.genderButtonLabel}
+                        onPress={() => {
+                          setGender("female");
+                        }}
+                      >
+                        <Text style={styles.genderButtonLabelText}>Female</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.genderButtons}>
+                      <RadioButton
+                        uncheckedColor="black"
+                        color={Colors.accent}
+                        label="Other"
+                        value="other"
+                        status={gender === "other" ? "checked" : "unchecked"}
+                        onPress={() => {
+                          setGender("other");
+                        }}
+                      />
+                      <TouchableOpacity
+                        style={styles.genderButtonLabel}
+                        onPress={() => {
+                          setGender("other");
+                        }}
+                      >
+                        <Text style={styles.genderButtonLabelText}>Other</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+                {data.isValidGender ? null : (
+                  <Text style={styles.errorMsg}>Please select a gender.</Text>
+                )}
+              </View>
+
+              <View style={styles.inputWrapper}>
+                <Text style={[styles.footer, { marginTop: 25 }]}>
+                  Mailinglist
+                </Text>
+                <TouchableOpacity onPress={checkBoxHandler}>
+                  <View style={styles.action}>
+                    <Entypo name="newsletter" size={20} />
+                    {data.mailinglist ? (
+                      <View style={styles.checked}>
+                        <View></View>
+                        <Text style={styles.textCheckbox}>
+                          Thank you for signing up
+                        </Text>
+                        <Feather
+                          name="check-circle"
+                          color={Colors.default.accent}
+                          size={20}
+                        />
+                      </View>
+                    ) : (
+                      <View style={styles.unchecked}>
+                        <Text style={styles.textCheckbox}>
+                          Receive the latest new and offers
+                        </Text>
+                      </View>
+                    )}
+                    <View></View>
+                  </View>
+                </TouchableOpacity>
               </View>
 
               <View style={styles.inputWrapper}>
@@ -558,14 +800,14 @@ const SignUp = ({ navigation }) => {
                   },
                 ]}
               >
-                <Text style={{ color: colours.default.accent }}>Sign Up</Text>
+                <Text style={{ color: Colors.default.accent }}>Sign Up</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 onPress={() => navigation.navigate("SignIn")}
                 style={styles.signIn}
               >
-                <Text>Sign In</Text>
+                <Text>Have an account? Sign in here.</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -602,7 +844,7 @@ const styles = StyleSheet.create({
     width: "85%", //Platform.OS === "ios" ? "80%" : height_container,
     borderRadius: 40,
     borderWidth: 1,
-    borderColor: colours.default.accent,
+    borderColor: Colors.default.accent,
     padding: 20,
   },
   title: {
@@ -615,12 +857,22 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    marginTop: Platform.OS === "ios" ? 0 : -12,
+    marginTop: 0,
     paddingLeft: 10,
-    color: "#05375a",
+    color: Colors.blue,
   },
   action: {
     flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f2f2f2",
+    paddingBottom: 5,
+  },
+  dobAction: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
     marginTop: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#f2f2f2",
@@ -632,7 +884,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
-    borderColor: colours.default.accent,
+    borderColor: Colors.accent,
     borderWidth: 1,
     marginTop: 15,
   },
@@ -654,5 +906,89 @@ const styles = StyleSheet.create({
   },
   footer: {
     color: "#000",
+  },
+  text: {
+    flex: 1,
+    marginTop: 0,
+    paddingLeft: 10,
+    color: "#aaa",
+  },
+
+  // Style for iOS ONLY...
+  datePicker: {
+    justifyContent: "center",
+    alignItems: "flex-start",
+    width: 320,
+    height: 260,
+    display: "flex",
+  },
+  radioButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  button: {
+    alignItems: "center",
+    backgroundColor: Colors.black,
+    paddingVertical: 10,
+    paddingHorizontal: 50,
+    width: "80%",
+  },
+  button2: {
+    alignItems: "center",
+    backgroundColor: Colors.black,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    width: "100%",
+    borderColor: Colors.accent,
+    borderWidth: 1,
+  },
+  buttonLabel: {
+    color: "#05375a",
+    // fontFamily: "open-sans-bold",
+    fontSize: 15,
+  },
+  label: {
+    // fontFamily: "open-sans-bold",
+    marginVertical: 8,
+    color: "#05375a",
+  },
+  genderButtons: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "30%",
+  },
+  genderButtonLabel: {
+    flexDirection: "row",
+  },
+  genderButtonLabelText: {
+    color: "#05375a",
+  },
+  mailingList: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginVertical: 30,
+  },
+  signUp: {
+    color: "white",
+    fontFamily: "open-sans-bold",
+    fontSize: 15,
+    width: "70%",
+  },
+  textCheckbox: {
+    color: "#05375a",
+  },
+  unchecked: {
+    // height: 32,
+    // width: 32,
+    // borderColor: Colors.blue,
+    // borderWidth: 1,
+    // borderRadius: 15,
+    // overflow: "hidden",
+  },
+  checked: {
+    flexDirection: "row",
+    lineHeight: 25,
+    justifyContent: "space-between",
+    width: "95%",
   },
 });

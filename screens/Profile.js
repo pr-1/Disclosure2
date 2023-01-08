@@ -1,7 +1,28 @@
 // ./screens/Home.js
-
-import React from "react";
-import { View, Button, Text, StyleSheet } from "react-native";
+import React, {
+  useReducer,
+  useCallback,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  ActivityIndicator,
+  Alert,
+  Platform,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+  Button,
+} from "react-native";
+import { RadioButton } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { Ionicons } from "@expo/vector-icons";
 
 const Profile = ({ navigation }) => {
   return (
