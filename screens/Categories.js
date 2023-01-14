@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -13,11 +13,21 @@ import { useSelector } from "react-redux";
 import * as RootNavigation from "../navigation/RootNavigation";
 import { Divider } from "react-native-elements";
 import Colors from "../constants/Colors";
+import { AuthContext } from "../components/context";
+import SearchBar from "../components/UI/SearchBar";
 
 const width = Dimensions.get("window").width;
 
-const Categories = () => {
+const Categories = ({ navigation }) => {
   const categories = useSelector((state) => state.products.categories);
+  const { search, toggleSearch } = useContext(AuthContext);
+
+  // If search bar is open on page mount, close search bar
+  useEffect(() => {
+    if (search) {
+      toggleSearch();
+    }
+  }, []);
 
   const header = () => {
     return (
@@ -46,6 +56,14 @@ const Categories = () => {
   } else {
     return (
       <SafeAreaView style={styles.center}>
+        {search ? (
+          <SearchBar
+            pageName="categories"
+            displayInModal={true}
+            navigation={navigation}
+            category=""
+          />
+        ) : null}
         <FlatList
           ListHeaderComponent={header}
           ItemSeparatorComponent={separator}

@@ -10,6 +10,7 @@ import SignUp from "../screens/SignUp";
 import SignIn from "../screens/SignIn";
 import StartUp from "../screens/StartupScreen";
 import Validate from "../screens/Validate";
+import Forgotten from "../screens/Forgotten";
 
 const Stack = createStackNavigator();
 
@@ -40,6 +41,7 @@ const AuthStackNavigator = () => {
       <Stack.Screen name="SignIn" component={SignIn} />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="Validate" component={Validate} />
+      <Stack.Screen name="ForgottenPassword" component={Forgotten} />
     </Stack.Navigator>
   );
 };

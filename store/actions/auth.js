@@ -48,7 +48,6 @@ export const authenticate = (
 };
 
 export const reRegister = (foundUser) => {
-  console.log({ foundUser });
   return async (dispatch) => {
     dispatch(
       authenticate(
@@ -75,168 +74,62 @@ export const update = (
   lname,
   email,
   phone,
-  userId,
-  token,
   postcode,
-  imageUri,
-  image_changed,
   dob,
   gender,
-  mailingList
+  mailingList,
+  userId,
+  token
 ) => {
   return async (dispatch) => {
-    if (image_changed) {
-      const newImageUri = "file:///" + imageUri.split("file:/").join("");
-      let base_url =
-        "https://app.disclosurediscounts.co.uk/api/imageupload.php";
-      let uploadData = new FormData();
-      uploadData.append("file", {
-        name: newImageUri.split("/").pop(),
-        type: mime.getType(newImageUri),
-        uri: newImageUri,
-      });
-      fetch(base_url, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
-        },
-        method: "POST",
-        body: uploadData,
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          if (response.status) {
-            imageUri = response.imagepath;
+    const response = await fetch(`${API_URL}/users/update/${userId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "*/*",
+        "Accept-Encoding": "gzip,deflate,br",
+        Connection: "keep-alive",
+        apiKey: apiKey,
+        token: token,
+      },
+      body: JSON.stringify({
+        fname: fname,
+        lname: lname,
+        email: email,
+        phone: phone,
+        postcode: postcode,
+        dob: dob,
+        gender: gender,
+        mailingList: mailingList,
+      }),
+    });
 
-            fetch(`${API_URL}/users/update/${userId}`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Accept: "*/*",
-                "Accept-Encoding": "gzip,deflate,br",
-                Connection: "keep-alive",
-                apiKey: apiKey,
-                token: token,
-              },
-              body: JSON.stringify({
-                fname: fname,
-                lname: lname,
-                email: email,
-                phone: phone,
-                postcode: postcode,
-                image_uri: imageUri,
-                dob: dob,
-                gender: gender,
-                mailingList: mailingList,
-              }),
-            })
-              .then((newResponse) => newResponse.json())
-              .then((newResponse) => {
-                dispatch(
-                  authenticate(
-                    newResponse.localId,
-                    newResponse.idToken,
-                    newResponse.email,
-                    newResponse.phone,
-                    newResponse.fname,
-                    newResponse.lname,
-                    newResponse.postcode,
-                    newResponse.image_uri,
-                    newResponse.dob,
-                    newResponse.gender,
-                    newResponse.mailingList,
-                    newResponse.expires
-                  )
-                );
-                saveDataToStorage(
-                  newResponse.idToken,
-                  newResponse.localId,
-                  newResponse.fname,
-                  newResponse.lname,
-                  newResponse.phone,
-                  newResponse.email,
-                  newResponse.postcode,
-                  newResponse.image_uri,
-                  newResponse.dob,
-                  newResponse.gender,
-                  newResponse.mailingList,
-                  newResponse.expires
-                );
-              });
-          } else {
-            Alert.alert("Error", response.message);
-          }
-        })
-        .catch(() => {
-          Alert.alert("Error", "Error on network");
-        });
-    } else {
-      const response = await fetch(`${API_URL}/users/update/${userId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "*/*",
-          "Accept-Encoding": "gzip,deflate,br",
-          Connection: "keep-alive",
-          apiKey: apiKey,
-          token: token,
-        },
-        body: JSON.stringify({
-          fname: fname,
-          lname: lname,
-          email: email,
-          phone: phone,
-          postcode: postcode,
-          image_uri: imageUri,
-          dob: dob,
-          gender: gender,
-          mailingList: mailingList,
-        }),
-      });
+    if (!response.ok) {
+      const errorResData = await response.json();
+      const errorId = errorResData.error.message;
 
-      if (!response.ok) {
-        const errorResData = await response.json();
-        const errorId = errorResData.error.message;
-
-        let message = "Something went wrong";
-        if (errorResData.error === "Invalid User Token") {
-          message = "Invalid User Token";
-        }
-
-        if (errorId === "EMAIL_EXISTS") {
-          message = "This email exists already";
-        }
-
-        throw new Error(message);
+      let message = "Something went wrong";
+      if (errorResData.error === "Invalid User Token") {
+        message = "Invalid User Token";
       }
 
-      const resData = await response.json();
+      if (errorId === "EMAIL_EXISTS") {
+        message = "This email exists already";
+      }
 
-      dispatch(
-        authenticate(
-          resData.localId,
-          resData.idToken,
-          resData.email,
-          resData.phone,
-          resData.fname,
-          resData.lname,
-          resData.postcode,
-          resData.image_uri,
-          resData.dob,
-          resData.gender,
-          resData.mailingList,
-          resData.expires,
-          resData.created_at
-        )
-      );
+      throw new Error(message);
+    }
 
-      saveDataToStorage(
-        resData.idToken,
+    const resData = await response.json();
+
+    dispatch(
+      authenticate(
         resData.localId,
+        resData.idToken,
+        resData.email,
+        resData.phone,
         resData.fname,
         resData.lname,
-        resData.phone,
-        resData.email,
         resData.postcode,
         resData.image_uri,
         resData.dob,
@@ -244,8 +137,9 @@ export const update = (
         resData.mailingList,
         resData.expires,
         resData.created_at
-      );
-    }
+      )
+    );
+    return resData;
   };
 };
 
@@ -297,8 +191,6 @@ export const signup = (
     } else {
       const resData = await response.json();
 
-      console.log({ resData });
-
       return { resData };
     }
   };
@@ -322,7 +214,7 @@ export const verifyCode = (code) => {
 
     if (!response.ok) {
       const errorResData = await response.json();
-      const errorId = errorResData.error.message;
+      const errorId = errorResData.error;
 
       let message = "Something went wrong";
 
@@ -350,6 +242,7 @@ export const verifyCode = (code) => {
           resData.created_at
         )
       );
+      return true;
     }
   };
 };
@@ -370,11 +263,9 @@ export const login = (email, password) => {
         password: password,
       }),
     });
-    console.log({ response });
 
     if (!response.ok) {
       const errorResData = await response.json();
-
       const errorId = errorResData.error.message;
       let message = "Something went wrong";
 
@@ -383,11 +274,9 @@ export const login = (email, password) => {
       } else if (errorId === "USER_NOT_ACTIVE") {
         message = "User not active - please contact support";
       }
-
       throw new Error(message);
     } else {
       const resData = await response.json();
-      console.log({ resData });
 
       dispatch(
         authenticate(
@@ -406,7 +295,7 @@ export const login = (email, password) => {
           resData.created_at
         )
       );
-      return { resData };
+      return resData;
     }
   };
 };
@@ -428,24 +317,24 @@ export const resetPassword = (email) => {
 
     if (!response.ok) {
       const errorResData = await response.json();
+      const error = errorResData.error.message;
 
-      const errorId = errorResData.error.message;
       let message = "Something went wrong";
 
-      if (errorId === "EMAIL_NOT_FOUND") {
+      if (error === "EMAIL_NOT_FOUND") {
         message = "Email or Password are incorrect";
-      } else if (errorId === "USER_NOT_ACTIVE") {
+      } else if (error === "USER_NOT_ACTIVE") {
         message = "User not active - please contact support";
       }
-
-      throw new Error(message);
+      throw new Error(error);
+    } else {
+      return true;
     }
-    const resData = await response.json();
-    console.log({ resData });
   };
 };
 
 export const changePassword = (password1, token) => {
+  console.log({ password1 }, { token });
   return async (dispatch) => {
     const response = await fetch(`${API_URL}/users/changepassword`, {
       method: "POST",
@@ -476,7 +365,7 @@ export const changePassword = (password1, token) => {
     }
 
     const resData = await response.json();
-
+    console.log({ resData });
     dispatch(
       authenticate(
         resData.localId,
@@ -494,22 +383,7 @@ export const changePassword = (password1, token) => {
         resData.created_at
       )
     );
-
-    saveDataToStorage(
-      resData.idToken,
-      resData.localId,
-      resData.fname,
-      resData.lname,
-      resData.phone,
-      resData.email,
-      resData.postcode,
-      resData.image_uri,
-      resData.dob,
-      resData.gender,
-      resData.mailingList,
-      resData.expires,
-      resData.created_at
-    );
+    return resData;
   };
 };
 export const deleteProfile = (token) => {

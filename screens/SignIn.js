@@ -96,11 +96,6 @@ const SignInScreen = ({ navigation }) => {
 
   const loginHandler = async (email, password) => {
     let foundUser;
-
-    // const foundUser = Users.filter((item) => {
-    //   return email == item.email && password == item.password;
-    // });
-
     if (data.email.length == 0 || data.password.length == 0) {
       Alert.alert("Invalid Input!", "Email or Password field cannot be empty", [
         { text: "Okay" },
@@ -111,7 +106,6 @@ const SignInScreen = ({ navigation }) => {
         foundUser = await dispatch(auth.login(email, password));
       } catch (err) {
         setError(err.message);
-        console.log({ err });
       }
     }
     signIn(foundUser);
@@ -168,7 +162,11 @@ const SignInScreen = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("ForgottenPassword");
+                }}
+              >
                 <Text
                   style={{
                     color: colours.default.accent,

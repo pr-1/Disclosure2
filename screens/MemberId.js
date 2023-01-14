@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -12,6 +12,8 @@ import {
 import { useSelector } from "react-redux";
 import CompanyLink from "../components/UI/CompanyLink";
 import Colors from "../constants/Colors";
+import { AuthContext } from "../components/context";
+import SearchBar from "../components/UI/SearchBar";
 
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
@@ -22,6 +24,7 @@ const MemberId = (props) => {
   const offers = useSelector((state) => state.magazine.newOffers);
   const user = useSelector((state) => state.auth);
   const anim = useRef(new Animated.Value(width * 0.29)).current;
+  const { search, toggleSearch } = useContext(AuthContext);
 
   const year = user?.createdOn?.substring(0, 4);
   const month = user?.createdOn?.substring(5, 7);
@@ -42,6 +45,13 @@ const MemberId = (props) => {
 
   useEffect(() => {
     moveUp();
+  }, []);
+
+  // If search bar is open on page mount, close search bar
+  useEffect(() => {
+    if (search) {
+      toggleSearch();
+    }
   }, []);
 
   const selectItemHandler = (item) => {
@@ -92,34 +102,17 @@ const MemberId = (props) => {
 
   return (
     <View style={styles.center}>
+      {search ? (
+        <SearchBar
+          pageName="home"
+          displayInModal={true}
+          navigation={props.navigation}
+          category=""
+        />
+      ) : null}
       <View style={styles.titleContainer}>
         <Text style={styles.titleText}>Member ID</Text>
       </View>
-      {/* <View style={styles.cardContainer}>
-        <View style={styles.goldCardContainer}>
-          <ImageBackground
-            source={require("./../assets/icons/card.png")}
-            resizeMode="contain"
-            resizeMethod="resize"
-            style={styles.imageGoldCard}
-          >
-            <View style={styles.goldCardTextContainer}>
-              <Text style={styles.goldCardText}>{user.fname}</Text>
-              <Text style={styles.goldCardText}>{user.lname}</Text>
-              <Text style={styles.goldCardTextMember}>{memberNumber}</Text>
-              <Text style={styles.goldCardTextDate}>{date}</Text>
-            </View>
-          </ImageBackground>
-        </View>
-        <View style={styles.blackCardContainer}>
-          <View style={styles.innerBlackCardContainer}>
-            <Text style={styles.mainText}>
-              Disclosure<Text style={styles.stop}>.</Text>
-            </Text>
-            <Text style={styles.bottomText}>DISCOUNTS</Text>
-          </View>
-        </View>
-      </View> */}
       <View style={styles.offersContainer}>
         <FlatList
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
@@ -139,10 +132,7 @@ const MemberId = (props) => {
             />
           )}
           ListHeaderComponent={renderHeader}
-          // ListFooterComponent={renderFooter}
           ListEmptyComponent={renderEmpty}
-          // onEndReachedThreshold={0.2}
-          // onEndReached={fetchMoreData}
         />
       </View>
     </View>

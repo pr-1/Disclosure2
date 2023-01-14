@@ -1,9 +1,8 @@
 // ./screens/Home.js
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import {
   View,
-  Button,
   Text,
   StyleSheet,
   Image,
@@ -14,32 +13,36 @@ import {
   Animated,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as RootNavigation from "../navigation/RootNavigation";
-
 import * as productsActions from "../store/actions/products";
 import * as magazineActions from "../store/actions/magazine";
 import * as auth from "../store/actions/auth";
 import * as location from "../store/actions/location";
 import * as Linking from "expo-linking";
 import Colors from "../constants/Colors";
+import AsyncAlert from "../components/UI/AsyncAlert";
+import { AuthContext } from "../components/context";
+import SearchBar from "../components/UI/SearchBar";
 
 const width = Dimensions.get("screen").width;
 const DOT_SIZE = 8;
 const DOT_SPACING = 8;
 const DOT_INDICATOR_SIZE = DOT_SIZE + DOT_SPACING;
 
-const Home = () => {
+const Home = ({ navigation }) => {
   const scrollX = useRef(new Animated.Value(0)).current;
   const slideIndexRef = useRef();
   const dispatch = useDispatch();
 
+  const { search, toggleSearch } = useContext(AuthContext);
   const advertisingSpace = useSelector(
     (state) => state.magazine.featuredCompanies
   );
+  const user = useSelector((state) => state.auth);
   const magazineUrl = useSelector((state) => state?.magazine?.magazine);
   const offers = useSelector((state) => state.magazine.newOffers);
+  // const search = navigation.getParams("search");
 
   const [featured, setFeatured] = useState();
   const [date, setDate] = useState("");
@@ -64,6 +67,12 @@ const Home = () => {
       clearInterval(interval);
     };
   });
+
+  useEffect(() => {
+    if (search) {
+      toggleSearch();
+    }
+  }, []);
 
   useEffect(() => {
     if (advertisingSpace) {
@@ -91,14 +100,18 @@ const Home = () => {
         console.log({ e });
       }
 
-      console.log("on home screen", JSON.parse(userToken));
-
       dispatch(auth.reRegister(JSON.parse(userToken)));
       dispatch(magazineActions.getInitial());
       dispatch(productsActions.fetchCategories());
       dispatch(location.getLocation());
     }, 1);
   }, []);
+
+  useEffect(() => {
+    if (user?.expires) {
+      RootNavigation.navigate("ResetPassword");
+    }
+  }, [user]);
 
   const renderOffer = (item) => {
     return (
@@ -129,6 +142,7 @@ const Home = () => {
       </View>
     );
   };
+
   if (offers && offers.length > 0) {
     return (
       <SafeAreaView style={styles.center}>
@@ -136,20 +150,29 @@ const Home = () => {
           contentContainerStyle={styles.scrollViewContainer}
           style={styles.scrollView}
         >
+          {search ? (
+            <SearchBar
+              pageName="home"
+              displayInModal={true}
+              navigation={navigation}
+              category=""
+            />
+          ) : null}
           <View style={styles.headerContainer}>
             <Text style={styles.headerText}>DISCLOSURE HUB</Text>
             <Text style={styles.headerStop}>.</Text>
           </View>
-
           <Animated.FlatList
             ref={slideIndexRef}
             horizontal
+            pointerEvents={search ? "none" : "auto"}
             pagingEnabled={true}
             showsHorizontalScrollIndicator={false}
             legacyImplementation={false}
             snapToInterval={width}
             decelerationRate="fast"
             bounces={false}
+            removeClippedSubviews={true}
             onScroll={Animated.event(
               [{ nativeEvent: { contentOffset: { x: scrollX } } }],
               { useNativeDriver: true }
@@ -188,7 +211,6 @@ const Home = () => {
               ]}
             />
           </View>
-
           <View style={styles.featuredContainer}>
             <View style={styles.advertisingContainer}>
               <TouchableOpacity
@@ -244,7 +266,6 @@ const Home = () => {
               <Text style={styles.allDiscountsText}>All discounts</Text>
             </TouchableOpacity>
           </View>
-
           <View style={styles.linksContainer}>
             <View style={styles.linksCategoriesContainer}>
               <TouchableOpacity
@@ -290,7 +311,6 @@ const Home = () => {
               </TouchableOpacity>
             </View>
           </View>
-
           <View style={styles.magazineContainer}>
             <TouchableOpacity
               style={styles.linksDirectoryWrapper}

@@ -34,7 +34,7 @@ const CompanyDetails = ({ route }) => {
   if (selected?.twitter) {
     cloud = { type: "twitter", url: selected?.twitter };
   }
-  if (selected?.twitter) {
+  if (selected?.facebook) {
     cloud = { type: "facebook", url: selected?.facebook };
   }
   if (selected?.website) {
@@ -143,7 +143,11 @@ const CompanyDetails = ({ route }) => {
         <View style={styles.backgroundImageContainer}>
           <Image
             style={styles.backgroundImage}
-            source={{ uri: selected?.backgroundImage }}
+            source={{
+              uri: selected?.backgroundImage
+                ? selected?.backgroundImage
+                : selected?.bottomImage1,
+            }}
             resizeMode="cover"
             resizeMethod="resize"
           />

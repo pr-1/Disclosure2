@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -8,8 +8,6 @@ import {
   TouchableOpacity,
   Platform,
   TextInput,
-  KeyboardAvoidingView,
-  Alert,
   Button,
 } from "react-native";
 import { useDispatch } from "react-redux";
@@ -72,7 +70,7 @@ const SignUp = ({ navigation }) => {
     password: "",
     confirmPassword: "",
     passwordStrength: 0,
-    passwordMessage: "Password stength is weak",
+    passwordMessage: "",
     check_nameInputChange: false,
     check_textInputChange: false,
     check_phoneInputChange: false,
@@ -88,6 +86,7 @@ const SignUp = ({ navigation }) => {
     isValidPasswordMatch: true,
     isValidDateOfBirth: true,
     isValidGender: true,
+    color: "grey",
   });
   const { signUp } = useContext(AuthContext);
   const dispatch = useDispatch();
@@ -101,7 +100,6 @@ const SignUp = ({ navigation }) => {
   useEffect(() => {
     async function customAlert() {
       if (error) {
-        // Alert.alert("An error occured", error, [{ text: "Ok" }]);
         await AsyncAlert("An error occured", error);
         if (error === "This email exists already") {
           navigation.navigate("SignIn");
@@ -332,11 +330,14 @@ const SignUp = ({ navigation }) => {
       setData({
         ...data,
         isValidPasswordMatch: true,
+        color: "green",
+        passwordMessage: "",
       });
     } else {
       setData({
         ...data,
         isValidPasswordMatch: false,
+        color: "red",
       });
     }
   };
@@ -442,8 +443,14 @@ const SignUp = ({ navigation }) => {
     if (data.gender === "") {
       setData({ ...data, isValidGender: false });
     }
+    if (data.password === data.confirmPassword) {
+      setData({
+        ...data,
+        passwordMessage: "Passwords must match",
+      });
+    }
+
     if (form && data.passwordStrength != "red") {
-      console.log({ data }, { form });
       try {
         const response = await dispatch(
           auth.signup(
@@ -459,7 +466,6 @@ const SignUp = ({ navigation }) => {
           )
         );
 
-        console.log({ response });
         signUp(response);
 
         navigation.navigate("Validate");
@@ -747,9 +753,9 @@ const SignUp = ({ navigation }) => {
                   />
                   <TouchableOpacity onPress={updateSecureTextEntry}>
                     {data.secureTextEntry ? (
-                      <Feather name="eye-off" color="grey" size={25} />
+                      <Feather name="eye-off" color={data.color} size={25} />
                     ) : (
-                      <Feather name="eye" color="grey" size={25} />
+                      <Feather name="eye" color={data.color} size={25} />
                     )}
                   </TouchableOpacity>
                 </View>
@@ -780,14 +786,14 @@ const SignUp = ({ navigation }) => {
                   />
                   <TouchableOpacity onPress={updateConfirmSecureTextEntry}>
                     {data.confirmSecureTextEntry ? (
-                      <Feather name="eye-off" color="grey" size={25} />
+                      <Feather name="eye-off" color={data.color} size={25} />
                     ) : (
-                      <Feather name="eye" color="grey" size={25} />
+                      <Feather name="eye" color={data.color} size={25} />
                     )}
                   </TouchableOpacity>
                 </View>
                 {data.isValidPasswordMatch ? null : (
-                  <Text style={styles.errorMsg}>Passwords must match.</Text>
+                  <Text style={styles.errorMsg}>{data.passwordMessage}</Text>
                 )}
               </View>
 

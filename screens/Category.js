@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import {
   View,
   Text,
@@ -6,11 +6,13 @@ import {
   FlatList,
   Image,
   Dimensions,
+  Alert,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
 import * as productsActions from "../store/actions/products";
-
+import { AuthContext } from "../components/context";
+import SearchBar from "../components/UI/SearchBar";
 import CompanyLink from "../components/UI/CompanyLink";
 import Colors from "../constants/Colors";
 
@@ -28,16 +30,18 @@ function useAsyncRef(ref) {
 }
 
 const Category = (props) => {
+  const [error, setError] = useState();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth);
   const products = useSelector((state) => state.products.availableProducts);
   const maxCount = useSelector((state) => state.products.count);
   const location = useSelector((state) => state.location);
+  const { search, toggleSearch } = useContext(AuthContext);
 
   const category = useSelector((state) =>
     state.products.categories.find((cat) => cat.name === props.route.params.cat)
   );
-  console.log("category page", props.route.params.cat);
+
   const [page, setPage] = useState(1);
   const [long, setLong] = useAsyncRef();
   const [lat, setLat] = useAsyncRef();
@@ -45,6 +49,20 @@ const Category = (props) => {
   const [url, setUrl] = useAsyncRef();
   const [cat, setCat] = useAsyncRef();
   const [filter, setFilter] = useAsyncRef("");
+
+  // Handle errors arising from the api fetch
+  useEffect(() => {
+    if (error) {
+      Alert.alert("An error occured", error, [{ text: "Ok" }]);
+    }
+  }, [error]);
+
+  // If search bar is open on page mount, close search bar
+  useEffect(() => {
+    if (search) {
+      toggleSearch();
+    }
+  }, []);
 
   useEffect(() => {
     setLong(location?.long);
@@ -78,36 +96,39 @@ const Category = (props) => {
   }, [location, category]);
 
   const fetchProducts = (clear) => {
-    dispatch(
-      productsActions.fetchProducts(
-        long.current, //Long
-        lat.current, //Lat
-        filter.current, //Filter
-        "", //Filter Value
-        "", //Search Value
-        page,
-        cat.current, //Category
-        user.token,
-        clear
-      )
-    );
+    try {
+      dispatch(
+        productsActions.fetchProducts(
+          long.current, //Long
+          lat.current, //Lat
+          filter.current, //Filter
+          "", //Filter Value
+          "", //Search Value
+          page,
+          cat.current, //Category
+          user.token,
+          clear
+        )
+      );
+    } catch (err) {
+      setError(err);
+    }
   };
 
   useEffect(() => {
-    if (user?.token && location?.long) {
+    if (user?.token && location?.long && !search) {
       if (page === 1) {
         fetchProducts(true);
       } else {
         fetchProducts(false);
       }
     }
-  }, [user, page, maxCount, location]);
+  }, [user, page, maxCount, location, search]);
 
   const fetchMoreData = () => {
     if (maxCount > products.length) {
       setPage(page + 1);
     }
-    console.log("fetch data");
   };
 
   const selectItemHandler = (item) => {
@@ -148,13 +169,21 @@ const Category = (props) => {
 
   return (
     <View style={styles.center}>
+      {search ? (
+        <SearchBar
+          pageName="category"
+          displayInModal={true}
+          navigation={props.navigation}
+          category={cat.current}
+        />
+      ) : null}
       <FlatList
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
         data={products}
         renderItem={({ item }) => (
           <CompanyLink
             name={item.name}
-            offer={item.offer}
+            offer={item.directoryTitle}
             end={item.end}
             town={item.town}
             distance={item.distance}

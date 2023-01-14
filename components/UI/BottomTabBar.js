@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import * as Linking from "expo-linking";
+import { AuthContext } from "../context";
+import * as ProductActions from "../../store/actions/products";
 
 const BottomTabBar = ({ navigation }) => {
   const url = useSelector((state) => state.magazine.magazine);
   const [magazineUrl, setMagazineUrl] = useState("");
+  const { toggleSearch, search } = useContext(AuthContext);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (url.length > 0) {
@@ -13,12 +18,26 @@ const BottomTabBar = ({ navigation }) => {
     }
   }, [url]);
 
+  const searchButtonHandler = () => {
+    toggleSearch();
+    if (!search) {
+      dispatch(ProductActions.clearSearchResults());
+    }
+  };
+
+  const navigationHandler = (page) => {
+    if (search) {
+      toggleSearch();
+    }
+    navigation.navigate(page);
+  };
+
   return (
     <>
       <View style={styles.navContainer}>
         <View style={styles.bottomTabButtons}>
           <TouchableOpacity
-            onPress={() => navigation.navigate("Member ID")}
+            onPress={() => navigationHandler("Member ID")}
             style={styles.iconBehave}
           >
             <Image
@@ -28,7 +47,7 @@ const BottomTabBar = ({ navigation }) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate("Categories")}
+            onPress={() => navigationHandler("Categories")}
             style={styles.iconBehave}
           >
             <Image
@@ -48,7 +67,7 @@ const BottomTabBar = ({ navigation }) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => console.log("Search icon clicked")}
+            onPress={searchButtonHandler}
             style={styles.iconBehave}
           >
             <Image

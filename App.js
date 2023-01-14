@@ -45,6 +45,7 @@ const App = () => {
     isLoading: true,
     userName: null,
     userToken: null,
+    search: false,
   };
 
   const loginReducer = (prevState, action) => {
@@ -76,6 +77,11 @@ const App = () => {
           userToken: action.token,
           isLoading: false,
         };
+      case "SET_SEARCH_STATE":
+        return {
+          ...prevState,
+          search: action.search,
+        };
     }
   };
 
@@ -84,19 +90,18 @@ const App = () => {
   const authContext = useMemo(
     () => ({
       signIn: async (foundUser) => {
-        const userToken = String(foundUser.resData.idToken);
-        const userName = foundUser.resData.email;
+        const userToken = String(foundUser?.idToken);
+        const userName = foundUser?.email;
+        if (foundUser) {
+          try {
+            await AsyncStorage.setItem("userToken", JSON.stringify(foundUser));
+            await AsyncStorage.removeItem("validateToken");
+          } catch (e) {
+            console.log({ e });
+          }
 
-        try {
-          await AsyncStorage.setItem(
-            "userToken",
-            JSON.stringify(foundUser.resData)
-          );
-        } catch (e) {
-          console.log({ e });
+          dispatch({ type: "LOGIN", name: userName, token: userToken });
         }
-
-        dispatch({ type: "LOGIN", name: userName, token: userToken });
       },
       signOut: async () => {
         try {
@@ -112,13 +117,16 @@ const App = () => {
             "validateToken",
             JSON.stringify(foundUser.resData)
           );
-          console.log("inside validate try", { foundUser });
         } catch (e) {
           console.log({ e });
         }
       },
+      toggleSearch: async () => {
+        dispatch({ type: "SET_SEARCH_STATE", search: !loginState.search });
+      },
+      search: loginState.search,
     }),
-    []
+    [loginState]
   );
 
   const [fontsLoaded] = useFonts({
@@ -168,7 +176,7 @@ const App = () => {
           <StatusBar style="light" />
 
           {loginState?.userToken !== null ? (
-            <ShopTabNavigator />
+            <ShopTabNavigator searchState={loginState.search} />
           ) : (
             <AuthStackNavigator />
           )}

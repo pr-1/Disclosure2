@@ -14,6 +14,7 @@ import Categories from "../screens/Categories";
 import Category from "../screens/Category";
 import Profile from "../screens/Profile";
 import CompanyDetails from "../screens/CompanyDetails";
+import ResetPassword from "../screens/ResetPassword";
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -36,6 +37,8 @@ const drawerOptions = {
     backgroundColor: "#000",
   },
   headerTitleAlign: "center",
+  activeTintColor: "#fff",
+  inactiveTintColor: "#fff",
   drawerActiveTintColor: "#fff",
   drawerInactiveTintColor: "#fff",
   drawerItemStyle: { marginLeft: 20 },
@@ -116,6 +119,11 @@ const MainDrawerNavigator = () => {
       <Drawer.Screen
         name="CompanyDetails"
         component={CompanyDetails}
+        options={drawerOptions}
+      />
+      <Drawer.Screen
+        name="ResetPassword"
+        component={ResetPassword}
         options={drawerOptions}
       />
     </Drawer.Navigator>

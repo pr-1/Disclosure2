@@ -19,8 +19,9 @@ import { Ionicons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 import * as authActions from "../store/actions/auth";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Validate = ({ navigation, route }) => {
+const Validate = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
   const [data, setData] = useState({
@@ -50,17 +51,21 @@ const Validate = ({ navigation, route }) => {
   };
 
   const submitHandler = async () => {
-    if (data.code) {
+    if (data.isValidCode) {
       setError(null);
       setIsLoading(true);
+      console.log({ data });
       let action;
 
       action = authActions.verifyCode(data.code);
 
       try {
-        await dispatch(action);
-
-        //props.navigation.navigate("Home");
+        await dispatch(action).then((response) => {
+          if (response === true) {
+            AsyncStorage.removeItem("validateToken");
+            navigation.navigate("SignIn");
+          }
+        });
       } catch (err) {
         setError(err.message);
         setIsLoading(false);
@@ -115,7 +120,6 @@ const Validate = ({ navigation, route }) => {
                     onChangeText={(val) => {
                       textChangeHandler(val);
                     }}
-                    onEndEditing={() => {}} //{(e) => handleValidPhone(e.nativeEvent.text)}
                     keyboardType="number-pad"
                     autoFocus
                     maxLength={6}

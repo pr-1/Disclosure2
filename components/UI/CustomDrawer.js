@@ -48,12 +48,6 @@ const CustomDrawer = (props) => {
             }}
             style={styles.headerContainer}
           >
-            <Image
-              source={{ uri: user?.imageUri }}
-              style={styles.userImage}
-              resizeMode="cover"
-              resizeMethod="resize"
-            />
             <View style={styles.nameTextContainer}>
               <Text style={styles.nameText}>
                 {user?.fname} {user?.lname}
