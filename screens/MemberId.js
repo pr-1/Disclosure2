@@ -9,11 +9,12 @@ import {
   Animated,
   Button,
 } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import CompanyLink from "../components/UI/CompanyLink";
 import Colors from "../constants/Colors";
 import { AuthContext } from "../components/context";
 import SearchBar from "../components/UI/SearchBar";
+import * as productsActions from "../store/actions/products";
 
 const width = Dimensions.get("screen").width;
 
@@ -22,6 +23,7 @@ const MemberId = (props) => {
   const user = useSelector((state) => state.auth);
   const anim = useRef(new Animated.Value(width * 0.29)).current;
   const { search, toggleSearch } = useContext(AuthContext);
+  const dispatch = useDispatch();
 
   const year = user?.createdOn?.substring(0, 4);
   const month = user?.createdOn?.substring(5, 7);
@@ -42,6 +44,11 @@ const MemberId = (props) => {
 
   useEffect(() => {
     moveUp();
+  }, []);
+
+  // Clear loaded products so old data doesnt display before correct data is loaded
+  useEffect(() => {
+    dispatch(productsActions.clearProducts());
   }, []);
 
   // If search bar is open on page mount, close search bar

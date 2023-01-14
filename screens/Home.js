@@ -75,6 +75,10 @@ const Home = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
+    dispatch(productsActions.clearProducts());
+  }, []);
+
+  useEffect(() => {
     if (advertisingSpace) {
       const index = Math.floor(Math.random() * advertisingSpace.length);
       setFeatured(advertisingSpace[index]);

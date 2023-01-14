@@ -31,7 +31,7 @@ export const fetchProducts = (
     clear = true;
     page = 1;
   }
-
+  console.log({ page });
   return async (dispatch) => {
     const response = await fetch(
       "https://app.disclosurediscounts.co.uk/api/v2/companies/distance",
@@ -60,14 +60,17 @@ export const fetchProducts = (
     if (!response.ok) {
       const errorResData = await response.json();
       const errorId = errorResData.error.message;
-      throw new Error("Something went wrong!");
+      throw new Error(errorId);
     }
 
     const resData = await response.json();
 
+    console.log({ resData });
+
     const loadedProducts = [];
     for (const key in resData.companies) {
       loadedProducts.push({
+        id: resData.companies[key].company_id,
         name: resData.companies[key].name,
         town: resData.companies[key].town,
         postcode: resData.companies[key].postcode,
@@ -89,6 +92,8 @@ export const fetchProducts = (
         backgroundImage: resData.companies[key].background_image,
       });
     }
+
+    console.log({ loadedProducts });
     if (search) {
       dispatch({
         type: SET_SEARCH_RESULTS,

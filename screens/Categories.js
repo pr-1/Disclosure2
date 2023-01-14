@@ -9,24 +9,30 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import * as RootNavigation from "../navigation/RootNavigation";
 import { Divider } from "react-native-elements";
 import Colors from "../constants/Colors";
 import { AuthContext } from "../components/context";
 import SearchBar from "../components/UI/SearchBar";
+import * as productsActions from "../store/actions/products";
 
 const width = Dimensions.get("window").width;
 
 const Categories = ({ navigation }) => {
   const categories = useSelector((state) => state.products.categories);
   const { search, toggleSearch } = useContext(AuthContext);
+  const dispatch = useDispatch();
 
   // If search bar is open on page mount, close search bar
   useEffect(() => {
     if (search) {
       toggleSearch();
     }
+  }, []);
+
+  useEffect(() => {
+    dispatch(productsActions.clearProducts());
   }, []);
 
   const header = () => {

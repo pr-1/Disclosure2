@@ -1,11 +1,8 @@
 // ./navigation/StackNavigator.js
 
-import React, { useEffect } from "react";
+import React from "react";
 import { Image } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import SignUp from "../screens/SignUp";
 import SignIn from "../screens/SignIn";
 import StartUp from "../screens/StartupScreen";

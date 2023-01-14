@@ -197,7 +197,7 @@ const Category = (props) => {
         ListHeaderComponent={renderHeader}
         ListFooterComponent={renderFooter}
         ListEmptyComponent={renderEmpty}
-        onEndReachedThreshold={0.2}
+        onEndReachedThreshold={0.3}
         onEndReached={fetchMoreData}
       />
     </View>
