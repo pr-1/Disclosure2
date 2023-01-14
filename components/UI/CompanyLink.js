@@ -31,7 +31,6 @@ const CompanyLink = (props) => {
       ? props.name.substring(0, namelength - 3) + "..."
       : props.name;
 
-  console.log({ props });
   return (
     <TouchableOpacity
       style={styles.linkWrapper}

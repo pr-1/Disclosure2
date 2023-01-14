@@ -16,9 +16,6 @@ import { AuthContext } from "../components/context";
 import SearchBar from "../components/UI/SearchBar";
 
 const width = Dimensions.get("screen").width;
-const height = Dimensions.get("screen").height;
-
-console.log({ height }, { width });
 
 const MemberId = (props) => {
   const offers = useSelector((state) => state.magazine.newOffers);
