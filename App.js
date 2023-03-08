@@ -46,6 +46,7 @@ const App = () => {
     userName: null,
     userToken: null,
     search: false,
+    params: null,
   };
 
   const loginReducer = (prevState, action) => {
@@ -81,6 +82,11 @@ const App = () => {
         return {
           ...prevState,
           search: action.search,
+        };
+      case "SET_PAGEPARAMS_STATE":
+        return {
+          ...prevState,
+          params: action.params,
         };
     }
   };
@@ -125,6 +131,10 @@ const App = () => {
         dispatch({ type: "SET_SEARCH_STATE", search: !loginState.search });
       },
       search: loginState.search,
+      setPageParams: async (params) => {
+        dispatch({ type: "SET_PAGEPARAMS_STATE", params: params });
+      },
+      pageParams: loginState.params,
     }),
     [loginState]
   );

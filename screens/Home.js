@@ -320,9 +320,10 @@ const Home = ({ navigation }) => {
               style={styles.linksDirectoryWrapper}
               onPress={() => {
                 clearInterval();
-                magazineUrl?.length > 0
-                  ? Linking.openURL(magazineUrl[0].url)
-                  : null;
+                RootNavigation.navigate("Magazine");
+                // magazineUrl?.length > 0
+                //   ? Linking.openURL(magazineUrl[0].url)
+                //   : null;
               }}
             >
               <Image
@@ -426,7 +427,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     alignSelf: "center",
     backgroundColor: "white",
-    opacity: 0.8,
+    opacity: 0.9,
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",

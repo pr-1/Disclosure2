@@ -105,7 +105,7 @@ const CustomDrawer = (props) => {
             />
             <MenuItem
               name="Magazine"
-              target={magazineUrl}
+              target="Magazine"
               cat=""
               external
               navigation={props.navigation}

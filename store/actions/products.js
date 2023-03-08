@@ -65,8 +65,6 @@ export const fetchProducts = (
 
     const resData = await response.json();
 
-    console.log({ resData });
-
     const loadedProducts = [];
     for (const key in resData.companies) {
       loadedProducts.push({
@@ -93,7 +91,6 @@ export const fetchProducts = (
       });
     }
 
-    console.log({ loadedProducts });
     if (search) {
       dispatch({
         type: SET_SEARCH_RESULTS,

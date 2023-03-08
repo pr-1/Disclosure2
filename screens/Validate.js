@@ -54,7 +54,7 @@ const Validate = ({ navigation }) => {
     if (data.isValidCode) {
       setError(null);
       setIsLoading(true);
-      console.log({ data });
+
       let action;
 
       action = authActions.verifyCode(data.code);

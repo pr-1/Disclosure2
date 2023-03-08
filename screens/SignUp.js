@@ -845,7 +845,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 22,
-    backgroundColor: "rgba(255,255,255,0.8)",
+    backgroundColor: "rgba(255,255,255,0.9)",
     // height: height_container,
     width: "85%", //Platform.OS === "ios" ? "80%" : height_container,
     borderRadius: 40,

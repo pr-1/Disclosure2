@@ -36,10 +36,13 @@ const Category = (props) => {
   const products = useSelector((state) => state.products.availableProducts);
   const maxCount = useSelector((state) => state.products.count);
   const location = useSelector((state) => state.location);
-  const { search, toggleSearch } = useContext(AuthContext);
-
+  const { search, toggleSearch, pageParams, setPageParams } =
+    useContext(AuthContext);
+  const params = props?.route?.params?.cat
+    ? props?.route?.params?.cat
+    : pageParams;
   const category = useSelector((state) =>
-    state.products.categories.find((cat) => cat.name === props.route.params.cat)
+    state.products.categories.find((cat) => cat.name === params)
   );
 
   const [page, setPage] = useState(1);
@@ -65,13 +68,19 @@ const Category = (props) => {
   }, []);
 
   useEffect(() => {
+    if (params) {
+      setPageParams(params);
+    }
+  }, [params]);
+
+  useEffect(() => {
     setLong(location?.long);
     setLat(location?.lat);
     setName(category?.name);
-    setCat(props.route.params.cat);
+    setCat(params);
     setUrl(category?.url);
 
-    if (props.route.params.cat === "a-z") {
+    if (params === "a-z") {
       setLong(0);
       setLat(0);
       setCat("");
@@ -80,7 +89,7 @@ const Category = (props) => {
         "https://disclosureapp.s3.eu-west-2.amazonaws.com/disclosure/uploaded_images/all.png"
       );
     }
-    if (props.route.params.cat === "all") {
+    if (params === "all") {
       setLong(0);
       setLat(0);
       setCat("");
@@ -90,7 +99,7 @@ const Category = (props) => {
       );
       setFilter("discount_code");
     }
-    if (props.route.params.cat === "All categories") {
+    if (params === "All categories") {
       setCat("");
     }
   }, [location, category]);

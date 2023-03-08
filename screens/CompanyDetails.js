@@ -62,7 +62,7 @@ const CompanyDetails = ({ route }) => {
         ? selected?.discountCode.substring(0, codeLength)
         : selected?.discountCode;
   }
-
+  console.log({ selected });
   return (
     <View style={styles.center}>
       <Modal
@@ -195,12 +195,14 @@ const CompanyDetails = ({ route }) => {
                 <Text style={styles.titleText}>{selected?.description}</Text>
               </View>
             </ScrollView>
-            <TouchableOpacity
-              style={styles.discountButtonContainer}
-              onPress={() => setModalVisible(true)}
-            >
-              <Text style={styles.discountButtonText}>GET DISCOUNT</Text>
-            </TouchableOpacity>
+            {selected?.discountCode ? (
+              <TouchableOpacity
+                style={styles.discountButtonContainer}
+                onPress={() => setModalVisible(true)}
+              >
+                <Text style={styles.discountButtonText}>GET DISCOUNT</Text>
+              </TouchableOpacity>
+            ) : null}
           </View>
         </View>
       </View>

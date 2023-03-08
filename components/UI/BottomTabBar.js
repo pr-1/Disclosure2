@@ -57,7 +57,7 @@ const BottomTabBar = ({ navigation }) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => Linking.openURL(magazineUrl)}
+            onPress={() => navigationHandler("Magazine")}
             style={styles.iconBehave}
           >
             <Image
@@ -65,6 +65,10 @@ const BottomTabBar = ({ navigation }) => {
               source={require("../../assets/icons/magazineIcon.png")}
             />
           </TouchableOpacity>
+          {/* <TouchableOpacity
+            onPress={() => Linking.openURL(magazineUrl)}
+            style={styles.iconBehave}
+          ></TouchableOpacity> */}
 
           <TouchableOpacity
             onPress={searchButtonHandler}
