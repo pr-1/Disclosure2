@@ -11,6 +11,7 @@ import {
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { useSelector } from "react-redux";
 import * as RootNavigation from "./../../navigation/RootNavigation";
+import * as Linking from "expo-linking";
 
 import { AuthContext } from "../context";
 import MenuItem from "./MenuItem";
@@ -123,6 +124,18 @@ const CustomDrawer = (props) => {
                 <Text style={styles.bottomButtonText}>Sign Out</Text>
               </View>
             </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                Linking.openURL("https://thedisclosurehub.co.uk/contact");
+              }}
+              style={styles.signUpWrapper}
+            >
+              <View style={styles.signUp}>
+                <Text style={styles.signUpText}>
+                  Click here to advertise your company on this app
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </DrawerContentScrollView>
@@ -190,6 +203,20 @@ const styles = StyleSheet.create({
   categoryItems: {
     marginLeft: 30,
     fontSize: width > 600 ? 16 : 12,
+  },
+  signUpWrapper: {
+    paddingVertical: 15,
+    maxWidth: 220,
+  },
+  signUp: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 20,
+  },
+  signUpText: {
+    fontSize: width > 600 ? 20 : 15,
+    fontWeight: "bold",
+    color: Colors.accent,
   },
 });
 

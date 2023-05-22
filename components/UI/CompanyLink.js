@@ -39,7 +39,12 @@ const CompanyLink = (props) => {
     >
       <View style={styles.mainInfoDisplay}>
         <View style={styles.textContainer}>
-          <Text style={styles.name}>{name}</Text>
+          <View style={styles.textwrapper}>
+            <Text style={styles.name} numberOfLines={1}>
+              {name}
+            </Text>
+          </View>
+
           <Text style={styles.text}>Offer: {props.offer}</Text>
           <Text style={styles.text}>Valid Until: {date}</Text>
           <Text style={styles.text}>
@@ -77,18 +82,27 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   mainInfoDisplay: {
-    width: width > 600 ? "90%" : "87%",
+    width: width > 600 ? "90%" : "90%",
     height: "100%",
     borderWidth: 1,
     borderColor: "#888",
     borderRadius: width > 600 ? 800 : 40,
     alignItems: "center",
-    marginLeft: 30,
+    marginLeft: 45,
   },
   textContainer: {
     height: "100%",
     width: "70%",
-    paddingVertical: width > 600 ? 8 : 3,
+    paddingVertical: width > 600 ? 8 : 5,
+    paddingHorizontal: 2,
+  },
+  textwrapper: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    // display: "block",
+    width: "100%",
+    minWidth: 1,
   },
   name: {
     fontFamily: "Kollektif",

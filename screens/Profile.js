@@ -560,6 +560,7 @@ const Profile = ({ navigation }) => {
                         onChange={onDateSelected}
                         style={styles.datePicker}
                         maximumDate={new Date()}
+                        themeVariant="light"
                       />
                       {Platform.OS === "ios" && (
                         <Button
@@ -796,6 +797,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#f2f2f2",
     paddingBottom: 5,
+    alignItems: "center",
   },
   siginUp: {
     width: "100%",
@@ -857,6 +859,7 @@ const styles = StyleSheet.create({
     width: 320,
     height: 260,
     display: "flex",
+    alignSelf: "center",
   },
   radioButtonContainer: {
     flexDirection: "row",

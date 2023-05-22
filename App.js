@@ -47,6 +47,7 @@ const App = () => {
     userToken: null,
     search: false,
     params: null,
+    origin: "Home",
   };
 
   const loginReducer = (prevState, action) => {
@@ -87,6 +88,11 @@ const App = () => {
         return {
           ...prevState,
           params: action.params,
+        };
+      case "SET_ORIGIN_PAGE":
+        return {
+          ...prevState,
+          origin: action.origin,
         };
     }
   };
@@ -135,6 +141,11 @@ const App = () => {
         dispatch({ type: "SET_PAGEPARAMS_STATE", params: params });
       },
       pageParams: loginState.params,
+
+      setPageOrigin: async (origin) => {
+        dispatch({ type: "SET_ORIGIN_PAGE", origin: origin });
+      },
+      pageOrigin: loginState.origin,
     }),
     [loginState]
   );

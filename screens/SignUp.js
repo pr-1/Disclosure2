@@ -612,6 +612,8 @@ const SignUp = ({ navigation }) => {
                         onChange={onDateSelected}
                         style={styles.datePicker}
                         maximumDate={new Date()}
+                        themeVariant="light"
+                        textColor="black"
                       />
                       {Platform.OS === "ios" && (
                         <Button
@@ -927,6 +929,7 @@ const styles = StyleSheet.create({
     width: 320,
     height: 260,
     display: "flex",
+    alignSelf: "center",
   },
   radioButtonContainer: {
     flexDirection: "row",

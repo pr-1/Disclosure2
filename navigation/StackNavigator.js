@@ -28,7 +28,6 @@ const screenOptionStyle = {
     backgroundColor: "#000",
   },
   headerTintColor: "white",
-  // headerBackTitle: "Back",
 };
 
 const AuthStackNavigator = () => {

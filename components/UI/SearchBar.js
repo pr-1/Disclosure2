@@ -15,7 +15,7 @@ import Colors from "../../constants/Colors";
 import CompanyLink from "./CompanyLink";
 import { AuthContext } from "../context";
 
-const { width, height } = Dimensions.get("screen");
+const { width } = Dimensions.get("screen");
 
 const SearchBar = ({ displayInModal, navigation, category }) => {
   const [page, setPage] = useState(1);
@@ -100,7 +100,6 @@ const SearchBar = ({ displayInModal, navigation, category }) => {
   };
 
   const selectItemHandler = (item) => {
-    console.log({ item });
     navigation.navigate("CompanyDetails", {
       company: item,
     });
@@ -119,6 +118,7 @@ const SearchBar = ({ displayInModal, navigation, category }) => {
       </Text>
     </View>
   );
+
   if (!products) {
     return (
       <View>
@@ -146,7 +146,7 @@ const SearchBar = ({ displayInModal, navigation, category }) => {
           />
         </View>
       </View>
-      {displayInModal && products?.length > 0 ? (
+      {displayInModal && data?.searchTerm?.length > 0 ? (
         <View style={styles.dropdownContainer}>
           <FlatList
             // contentContainerStyle={{ flexGrow: 0, paddingBottom: 100 }}
@@ -158,7 +158,7 @@ const SearchBar = ({ displayInModal, navigation, category }) => {
                 end={item.end}
                 town={item.town}
                 distance={item.distance}
-                logoUrl={item.imageUrl}
+                logoUrl={item.mainImage}
                 discountAvailable={item.discountCode ? true : false}
                 onSelect={() => {
                   selectItemHandler(item);
@@ -229,6 +229,12 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     // alignItems: "center",
     maxHeight: "50%",
+  },
+  emptyTextContainer: {
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
   },
 });
 

@@ -21,7 +21,8 @@ const width = Dimensions.get("window").width;
 
 const Categories = ({ navigation }) => {
   const categories = useSelector((state) => state.products.categories);
-  const { search, toggleSearch } = useContext(AuthContext);
+  const { search, toggleSearch, setPageOrigin, setPageParams } =
+    useContext(AuthContext);
   const dispatch = useDispatch();
 
   // If search bar is open on page mount, close search bar
@@ -78,6 +79,8 @@ const Categories = ({ navigation }) => {
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => {
+                setPageOrigin("Categories");
+                // setPageParams(item.name);
                 RootNavigation.navigate("category", { cat: item.name });
               }}
             >
@@ -128,7 +131,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "column",
     width: (width - 100) / 3,
-    maxWidth: width > 600 ? 250 : 100,
+    maxWidth: width > 600 ? 200 : 100,
     marginHorizontal: 10,
   },
   itemText: {

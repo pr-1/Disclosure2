@@ -4,13 +4,11 @@ import {
   StyleSheet,
   Text,
   Dimensions,
-  FlatList,
   ImageBackground,
   Animated,
-  Button,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import CompanyLink from "../components/UI/CompanyLink";
+
 import Colors from "../constants/Colors";
 import { AuthContext } from "../components/context";
 import SearchBar from "../components/UI/SearchBar";
@@ -19,7 +17,6 @@ import * as productsActions from "../store/actions/products";
 const width = Dimensions.get("screen").width;
 
 const MemberId = (props) => {
-  const offers = useSelector((state) => state.magazine.newOffers);
   const user = useSelector((state) => state.auth);
   const anim = useRef(new Animated.Value(width * 0.29)).current;
   const { search, toggleSearch } = useContext(AuthContext);
@@ -58,52 +55,6 @@ const MemberId = (props) => {
     }
   }, []);
 
-  const selectItemHandler = (item) => {
-    props.navigation.navigate("CompanyDetails", {
-      company: item,
-    });
-  };
-
-  const renderHeader = () => (
-    <>
-      <View style={styles.cardContainer}>
-        <Animated.View style={[styles.goldCardContainer, { top: anim }]}>
-          <ImageBackground
-            source={require("./../assets/icons/card.png")}
-            resizeMode="contain"
-            resizeMethod="resize"
-            style={styles.imageGoldCard}
-          >
-            <View style={styles.goldCardTextContainer}>
-              <Text style={styles.goldCardText}>{user.fname}</Text>
-              <Text style={styles.goldCardText}>{user.lname}</Text>
-              <Text style={styles.goldCardTextMember}>{memberNumber}</Text>
-              <Text style={styles.goldCardTextDate}>{date}</Text>
-            </View>
-          </ImageBackground>
-        </Animated.View>
-        <View style={styles.blackCardContainer}>
-          <View style={styles.innerBlackCardContainer}>
-            <Text style={styles.mainText}>
-              Disclosure<Text style={styles.stop}>.</Text>
-            </Text>
-            <Text style={styles.bottomText}>DISCOUNTS</Text>
-          </View>
-        </View>
-      </View>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>New Offers</Text>
-      </View>
-    </>
-  );
-  const renderEmpty = () => (
-    <View style={styles.emptyTextContainer}>
-      <Text style={styles.emptyText}>
-        No companies available to display currently
-      </Text>
-    </View>
-  );
-
   return (
     <View style={styles.center}>
       {search ? (
@@ -118,26 +69,34 @@ const MemberId = (props) => {
         <Text style={styles.titleText}>Member ID</Text>
       </View>
       <View style={styles.offersContainer}>
-        <FlatList
-          contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
-          data={offers}
-          renderItem={({ item }) => (
-            <CompanyLink
-              name={item.name}
-              offer={item.offer}
-              end={item.end}
-              town={item.town}
-              distance={item.distance}
-              logoUrl={item.imageUrl}
-              discountAvailable={item.discountCode ? true : false}
-              onSelect={() => {
-                selectItemHandler(item);
-              }}
-            />
-          )}
-          ListHeaderComponent={renderHeader}
-          ListEmptyComponent={renderEmpty}
-        />
+        <View style={styles.cardContainer}>
+          <Animated.View style={[styles.goldCardContainer, { top: anim }]}>
+            <ImageBackground
+              source={require("./../assets/icons/MemberID5.png")}
+              resizeMode="contain"
+              resizeMethod="resize"
+              style={styles.imageGoldCard}
+            >
+              <View style={styles.goldCardTextContainer}>
+                <Text style={styles.goldCardText}>{user.fname}</Text>
+                <Text style={styles.goldCardText}>{user.lname}</Text>
+                <Text style={styles.goldCardTextMember}>{memberNumber}</Text>
+                <Text style={styles.goldCardTextDate}>{date}</Text>
+              </View>
+            </ImageBackground>
+          </Animated.View>
+          <View style={styles.blackCardContainer}>
+            <View style={styles.innerBlackCardContainer}>
+              <Text style={styles.mainText}>
+                Disclosure<Text style={styles.stop}>.</Text>
+              </Text>
+              <Text style={styles.bottomText}>DISCOUNTS</Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerText}>New Offers</Text>
+        </View>
       </View>
     </View>
   );
@@ -157,12 +116,12 @@ const styles = StyleSheet.create({
     fontFamily: "Kollektif",
   },
   cardContainer: {
-    flex: 10,
+    flex: 8,
     alignItems: "center",
     overflow: "hidden",
   },
   offersContainer: {
-    flex: 10,
+    flex: 4,
     overflow: "hidden",
   },
   headerContainer: {
@@ -184,19 +143,19 @@ const styles = StyleSheet.create({
   },
   goldCardTextContainer: {
     alignSelf: "center",
-    marginLeft: width * 0.08,
-    paddingTop: width * 0.08,
+    marginLeft: width * 0.12,
+    paddingTop: width * 0.163,
   },
   goldCardText: {
-    fontSize: width * 0.041,
+    fontSize: width * 0.035,
   },
   goldCardTextMember: {
     fontSize: width * 0.027,
-    paddingTop: 10,
+    paddingTop: 7,
   },
   goldCardTextDate: {
     fontSize: width * 0.03,
-    paddingTop: width * 0.085,
+    paddingTop: width * 0.035,
   },
   blackCardContainer: {
     backgroundColor: "black",

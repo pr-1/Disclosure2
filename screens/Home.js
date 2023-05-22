@@ -21,28 +21,25 @@ import * as auth from "../store/actions/auth";
 import * as location from "../store/actions/location";
 import * as Linking from "expo-linking";
 import Colors from "../constants/Colors";
-import AsyncAlert from "../components/UI/AsyncAlert";
+
 import { AuthContext } from "../components/context";
 import SearchBar from "../components/UI/SearchBar";
 
 const width = Dimensions.get("screen").width;
-const DOT_SIZE = 8;
-const DOT_SPACING = 8;
-const DOT_INDICATOR_SIZE = DOT_SIZE + DOT_SPACING;
+const height = Dimensions.get("screen").height;
 
 const Home = ({ navigation }) => {
   const scrollX = useRef(new Animated.Value(0)).current;
   const slideIndexRef = useRef();
   const dispatch = useDispatch();
 
-  const { search, toggleSearch } = useContext(AuthContext);
+  const { search, toggleSearch, setPageOrigin } = useContext(AuthContext);
   const advertisingSpace = useSelector(
     (state) => state.magazine.featuredCompanies
   );
   const user = useSelector((state) => state.auth);
   const magazineUrl = useSelector((state) => state?.magazine?.magazine);
   const offers = useSelector((state) => state.magazine.newOffers);
-  // const search = navigation.getParams("search");
 
   const [featured, setFeatured] = useState();
   const [date, setDate] = useState("");
@@ -123,21 +120,20 @@ const Home = ({ navigation }) => {
         <TouchableOpacity
           onPress={() => {
             clearInterval();
-            featured
-              ? RootNavigation.navigate("CompanyDetails", {
-                  company: item.item,
-                })
-              : null;
+            setPageOrigin("Home");
+            RootNavigation.navigate("CompanyDetails", {
+              company: item.item,
+            });
           }}
         >
           <Image
-            source={{ uri: item.item.imageUrl }}
+            source={{ uri: item.item.mainImage }}
             resizeMode="cover"
             resizeMethod="resize"
             style={styles.newOfferImage}
           />
           <View style={styles.newOfferTextContainer}>
-            <Text style={styles.newOfferText}>!NEW!</Text>
+            <Text style={styles.newOfferText}>!NEW OFFER!</Text>
             <Text style={styles.newOfferTextOffer}>
               Offer: {item.item.directoryTitle}
             </Text>
@@ -149,11 +145,11 @@ const Home = ({ navigation }) => {
 
   if (offers && offers.length > 0) {
     return (
-      <SafeAreaView style={styles.center}>
-        <ScrollView
-          contentContainerStyle={styles.scrollViewContainer}
-          style={styles.scrollView}
-        >
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContainer}
+        style={styles.scrollView}
+      >
+        <View style={styles.container}>
           {search ? (
             <SearchBar
               pageName="home"
@@ -162,247 +158,166 @@ const Home = ({ navigation }) => {
               category=""
             />
           ) : null}
-          <View style={styles.headerContainer}>
-            <Text style={styles.headerText}>DISCLOSURE HUB</Text>
-            <Text style={styles.headerStop}>.</Text>
-          </View>
-          <Animated.FlatList
-            ref={slideIndexRef}
-            horizontal
-            pointerEvents={search ? "none" : "auto"}
-            pagingEnabled={true}
-            showsHorizontalScrollIndicator={false}
-            legacyImplementation={false}
-            snapToInterval={width}
-            decelerationRate="fast"
-            bounces={false}
-            removeClippedSubviews={true}
-            onScroll={Animated.event(
-              [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-              { useNativeDriver: true }
-            )}
-            data={offers}
-            renderItem={(item) => renderOffer(item)}
-            keyExtractor={(_, index) => index.toString()}
-            style={{ width: width, height: "100%" }}
-            onScrollToIndexFailed={(info) => {
-              const wait = new Promise((resolve) => setTimeout(resolve, 500));
-              wait.then(() => {
-                flatList.current?.scrollToIndex({
-                  index: info.index,
-                  animated: true,
-                });
-              });
-            }}
-          />
-          <View style={styles.pagination}>
-            {offers.map((_, index) => {
-              return <View key={index} style={[styles.dot]}></View>;
-            })}
-            <Animated.View
-              style={[
-                styles.dotIndicator,
-                {
-                  transform: [
-                    {
-                      translateX: Animated.divide(scrollX, width).interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [0, DOT_INDICATOR_SIZE],
-                      }),
-                    },
-                  ],
-                },
-              ]}
-            />
-          </View>
-          <View style={styles.featuredContainer}>
-            <View style={styles.advertisingContainer}>
-              <TouchableOpacity
-                onPress={() => {
-                  clearInterval();
-                  featured
-                    ? RootNavigation.navigate("CompanyDetails", {
-                        company: featured,
-                      })
-                    : null;
+          <View style={styles.headerContainer}></View>
+
+          <View style={styles.blockContainer}>
+            {/* <View style={styles.scrollContainer}>
+              <Animated.FlatList
+                ref={slideIndexRef}
+                horizontal
+                pointerEvents={search ? "none" : "auto"}
+                pagingEnabled={true}
+                showsHorizontalScrollIndicator={false}
+                legacyImplementation={false}
+                snapToInterval={width}
+                decelerationRate="fast"
+                bounces={false}
+                removeClippedSubviews={true}
+                onScroll={Animated.event(
+                  [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+                  { useNativeDriver: true }
+                )}
+                data={offers}
+                renderItem={(item) => renderOffer(item)}
+                keyExtractor={(_, index) => index.toString()}
+                style={{ width: width, height: "100%" }}
+                onScrollToIndexFailed={(info) => {
+                  const wait = new Promise((resolve) =>
+                    setTimeout(resolve, 500)
+                  );
+                  wait.then(() => {
+                    flatList.current?.scrollToIndex({
+                      index: info.index,
+                      animated: true,
+                    });
+                  });
                 }}
-              >
-                <Image
-                  source={
-                    featured?.backgroundImage
-                      ? { uri: featured.backgroundImage }
-                      : require("./../assets/icons/tmp/advertising.png")
-                  }
-                  style={styles.advertisingImage}
-                />
-                <View style={styles.advertisingWrapper}>
-                  <View style={styles.advertisingLogoContainer}>
-                    <Image
-                      source={
-                        featured?.logo
-                          ? { uri: featured.logo }
-                          : require("./../assets/icons/tmp/advertisingLogo.png")
-                      }
-                      style={styles.advertisinglogo}
-                    />
-                  </View>
-                  <View style={styles.advertisingTextContainer}>
-                    <Text style={styles.advertisingText}>
-                      {featured?.name ? featured.name : "Advertise Here"}
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity
-              style={styles.allDiscountsContainer}
-              onPress={() => {
-                clearInterval();
-                RootNavigation.navigate("All Discounts");
-              }}
-            >
-              <View style={styles.allDiscountsImageWrapper}>
-                <Image
-                  source={require("./../assets/icons/all.png")}
-                  style={styles.allDiscountsImage}
-                />
-              </View>
-              <Text style={styles.allDiscountsText}>All discounts</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.linksContainer}>
-            <View style={styles.linksCategoriesContainer}>
+              />
+            </View> */}
+
+            {/* ************* Categories Directory Block ************* */}
+
+            <View style={styles.innerContainer}>
               <TouchableOpacity
-                style={styles.linksCategoriesWrapper}
+                style={styles.linksDirectoryWrapper}
                 onPress={() => {
                   clearInterval();
                   RootNavigation.navigate("Categories");
                 }}
               >
-                <View style={styles.linksCategoriesImageWrapper}>
+                <View style={styles.centre}>
                   <Image
-                    source={require("./../assets/icons/categorypic.jpg")}
-                    style={styles.linksCategoriesImage}
+                    source={require("./../assets/icons/Directory.png")}
+                    style={styles.categoriesImage}
+                    resizeMode="cover"
+                    resizeMethod="resize"
                   />
-                </View>
-                <View style={styles.linksCategoriesTextContainer}>
-                  <Text style={styles.linksCategoriesText}>Categories</Text>
+
+                  <View style={styles.categoriesTextContainer}>
+                    <Text style={styles.categoriesText}>Local</Text>
+                    <Text style={styles.categoriesText}>Business</Text>
+                    <Text style={styles.categoriesTextSmall}>Directory</Text>
+                  </View>
                 </View>
               </TouchableOpacity>
             </View>
-            <View style={styles.linksDirectoryContainer}>
+
+            {/* *************All Discounts Block ************************* */}
+
+            <View style={styles.innerContainer}>
               <TouchableOpacity
                 style={styles.linksDirectoryWrapper}
                 onPress={() => {
-                  clearInterval();
-                  RootNavigation.navigate("Directory");
+                  setPageOrigin("Home");
+                  RootNavigation.navigate("category", { cat: "all" });
                 }}
               >
-                <View style={styles.linksDirectoryImageWrapper}>
+                <View style={styles.centre}>
                   <Image
-                    source={require("./../assets/icons/Directory.png")}
-                    style={styles.linksDirectoryImage}
+                    source={require("./../assets/discountbackground.jpg")}
+                    style={styles.magazineImage}
+                    resizeMode="cover"
+                    resizeMethod="resize"
                   />
-                </View>
-                <View style={styles.linksDirectoryLogoContainer}>
-                  <View>
-                    <Text style={styles.linksDirectoryLogoText}>A-Z</Text>
+                  <View style={styles.discountImageContainer}>
+                    <Image
+                      source={require("./../assets/ddblack.jpg")}
+                      style={styles.discountImage}
+                      resizeMode="contain"
+                      resizeMethod="auto"
+                    />
+                    <View style={styles.discountTextContainer}>
+                      <Text style={styles.magazineText}>Discounts</Text>
+                    </View>
                   </View>
-                  <View style={styles.linksDirectoryTextContainer}>
-                    <Text style={styles.linksDirectoryText}>Directory</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {/* ************* Magazine Block ************************* */}
+
+            <View style={styles.innerContainer}>
+              <TouchableOpacity
+                style={styles.linksDirectoryWrapper}
+                onPress={() => {
+                  RootNavigation.navigate("Magazine");
+                }}
+              >
+                <View style={styles.centre}>
+                  <Image
+                    source={require("./../assets/magazineHeader.jpg")}
+                    style={styles.magazineImage}
+                    resizeMode="cover"
+                    resizeMethod="resize"
+                  />
+                  <View style={styles.magazineTextContainer}>
+                    <Text style={styles.magazineText}>Magazine</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {/* ************* Blog Block ************************* */}
+
+            <View style={styles.innerContainer}>
+              <TouchableOpacity
+                style={styles.linksDirectoryWrapper}
+                onPress={() => {
+                  Linking.openURL("https://thedisclosurehub.co.uk/blog");
+                }}
+              >
+                <View style={styles.centre}>
+                  <Image
+                    source={require("./../assets/blogHeader.jpg")}
+                    style={styles.magazineImage}
+                    resizeMode="cover"
+                    resizeMethod="resize"
+                  />
+                  <View style={styles.magazineTextContainer}>
+                    <Text style={styles.magazineText}>Blogs</Text>
                   </View>
                 </View>
               </TouchableOpacity>
             </View>
           </View>
-          <View style={styles.magazineContainer}>
-            <TouchableOpacity
-              style={styles.linksDirectoryWrapper}
-              onPress={() => {
-                clearInterval();
-                RootNavigation.navigate("Magazine");
-                // magazineUrl?.length > 0
-                //   ? Linking.openURL(magazineUrl[0].url)
-                //   : null;
-              }}
-            >
-              <Image
-                source={require("./../assets/icons/tmp/magazineHeader.png")}
-                style={styles.magazineImage}
-                resizeMode="cover"
-                resizeMethod="resize"
-              />
-              <View style={styles.magazineHeaderTextContainer}>
-                <View style={styles.magazineHeaderTextWrapper}>
-                  <View>
-                    <Text style={styles.magazineHeaderText}>
-                      {magazineUrl[0]?.town
-                        ? magazineUrl[0].town
-                        : "Milton Keynes"}
-                    </Text>
-                    <Text style={styles.magazineHeaderText}>
-                      Issue {magazineUrl[0]?.issue}
-                    </Text>
-                  </View>
-
-                  <Text style={styles.magazineHeaderText}>{date}</Text>
-                </View>
-              </View>
-              <View style={styles.magzineTextContainer}>
-                <Text style={styles.magazineText}>Magazine</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+        </View>
+      </ScrollView>
     );
   }
 };
 
 const styles = StyleSheet.create({
-  center: {
-    flex: 1,
+  container: {
+    height: height,
     alignItems: "center",
   },
+
   scrollView: {
     width: "100%",
   },
 
-  scrollViewContainer: {
-    // alignItems: "center",
-    // alignSelf: "center",
-    // width: "100%",
-  },
-  pagination: {
-    position: "absolute",
-    top: width > 600 ? 300 : 200,
-    left: width / 2 - 40,
-    flexDirection: "row",
-  },
-  dot: {
-    width: DOT_SIZE,
-    height: DOT_SIZE,
-    borderRadius: DOT_SIZE,
-    backgroundColor: "#333",
-    marginRight: DOT_SPACING,
-  },
-  dotIndicator: {
-    width: DOT_INDICATOR_SIZE,
-    height: DOT_INDICATOR_SIZE,
-    borderRadius: DOT_INDICATOR_SIZE,
-    borderWidth: 1,
-    borderColor: "#333",
-    position: "absolute",
-    top: -DOT_SIZE / 2,
-    left: -DOT_SIZE / 2,
-  },
-
   headerContainer: {
     width: "100%",
-    // alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "center",
-    paddingVertical: 20,
   },
   headerText: {
     fontSize: 30,
@@ -411,8 +326,35 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: Colors.accent,
   },
+
+  blockContainer: {
+    display: "flex",
+    height: "100%",
+    width: "100%",
+  },
+
+  centre: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  scrollContainer: {
+    flexDirection: "row",
+    height: (height - 100) / 4,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  innerContainer: {
+    flexDirection: "row",
+    height: (height - 100) / 4,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   newOfferContainer: {
-    width: width,
     height: "auto",
     flexDirection: "row",
     alignItems: "center",
@@ -420,7 +362,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   newOfferImage: {
-    height: width > 600 ? 250 : 150,
+    height: "100%", //width > 600 ? 250 : 150,
     width: width,
   },
   newOfferTextContainer: {
@@ -437,164 +379,91 @@ const styles = StyleSheet.create({
   },
   newOfferText: {
     fontSize: 20,
-    fontFamily: "Kollektif",
+    fontFamily: "Kollektif_Bold",
   },
   newOfferTextOffer: {
     fontSize: 20,
-    fontFamily: "Kollektif_Bold",
+    fontFamily: "Kollektif",
   },
-  featuredContainer: {
-    flexDirection: "row",
-    height: width > 600 ? 250 : 180,
-  },
-  advertisingContainer: {
-    flex: 3,
-  },
-  allDiscountsContainer: {
-    flex: 2,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  allDiscountsImage: {
-    height: 100,
-    width: 100,
-  },
-  allDiscountsImageWrapper: {
-    height: 110,
-    width: 110,
-    borderRadius: 55,
-    borderWidth: 1,
-    borderColor: Colors.accent,
-    overflow: "hidden",
-    marginBottom: 10,
-  },
-  allDiscountsText: {
-    fontSize: width > 600 ? 25 : 16,
-  },
-  advertisingImage: {
-    height: "100%",
-    width: "100%",
-    resizeMode: "cover",
-  },
-  advertisingWrapper: {
-    position: "absolute",
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 50,
-  },
-  advertisingLogoContainer: {
-    height: width > 600 ? 125 : 75,
-    width: width > 600 ? 125 : 75,
-    backgroundColor: "white",
-    padding: 5,
-  },
-  advertisinglogo: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "contain",
-  },
-  advertisingTextContainer: {
-    backgroundColor: "rgba(0,0,0,0.4)",
-    paddingVertical: 5,
-    paddingHorizontal: 8,
-  },
-  advertisingText: {
-    color: "white",
-    fontSize: 20,
-  },
-  linksContainer: {
-    flexDirection: "row",
-    height: width > 600 ? 250 : 180,
-  },
-  linksCategoriesContainer: {
-    backgroundColor: "white",
-    flex: 2,
-  },
-  linksDirectoryContainer: {
-    flex: 3,
-  },
-  linksCategoriesWrapper: {
-    alignItems: "center",
-    justiftContent: "center",
-  },
-  linksCategoriesImageWrapper: {
-    width: "100%",
-    alignItems: "center",
-  },
-  linksCategoriesImage: {
-    height: "90%",
-    width: "90%",
-    resizeMode: "contain",
-  },
-  linksCategoriesTextContainer: {
-    marginTop: -10,
-    marginBottom: -10,
-  },
-  linksCategoriesText: {
-    fontSize: width > 600 ? 25 : 18,
-  },
-
-  linksDirectoryWrapper: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  linksDirectoryImageWrapper: {
-    width: "100%",
-    alignItems: "center",
-  },
-  linksDirectoryImage: {
-    height: "100%",
-    width: "100%",
-    resizeMode: "cover",
-  },
-  linksDirectoryLogoContainer: {
-    position: "absolute",
-    backgroundColor: "rgba(255,255,255,0.5)",
-    width: "100%",
-    height: "100%",
-    paddingVertical: 20,
-  },
-  linksDirectoryTextContainer: {
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 20,
-  },
-  linksDirectoryLogoText: {
-    marginTop: width > 600 ? 50 : 0,
-    fontSize: 50,
-    color: Colors.accent,
-    marginBottom: 50,
-    alignSelf: "center",
-  },
-
-  linksDirectoryText: {
-    fontSize: width > 600 ? 25 : 18,
-    alignSelf: "center",
-  },
-
   magazineContainer: {
     height: 250,
     width: "100%",
   },
   magazineImage: {
-    width: "250%",
-    height: "100%",
+    maxWidth: "100%",
+    width: "100%",
+    height: (height - 100) / 4,
   },
-  magzineTextContainer: {
+  categoriesImage: {
+    maxWidth: "100%",
+    maxHeight: (height - 100) / 4,
+    opacity: 0.2,
+  },
+  discountImageContainer: {
+    width: "45%",
     position: "absolute",
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  discountImage: {
+    width: "100%",
+    height: ((height - 100) / 4) * 0.8,
+    marginBottom: -20,
+  },
+  discountTextContainer: {
     backgroundColor: "rgba(255,255,255,0.5)",
     paddingVertical: 5,
     paddingHorizontal: 15,
     borderRadius: 20,
   },
+  categoriesTextContainer: {
+    position: "absolute",
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  categoriesText: {
+    fontSize: 35,
+    fontFamily: "Kollektif_Bold",
+  },
+  categoriesTextSmall: {
+    fontSize: 20,
+    fontFamily: "Kollektif",
+    marginTop: 10,
+  },
+  magazineTextContainer: {
+    backgroundColor: "rgba(255,255,255,0.5)",
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    position: "absolute",
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    borderwidth: 1,
+    borderColor: "red",
+  },
+  blogTextContainer: {
+    // position: "absolute",
+    backgroundColor: "rgba(255,255,255,0.5)",
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    // left: width / 2 - 43,
+    // top: 100,
+  },
   magazineText: {
     fontSize: 20,
   },
   magazineHeaderTextContainer: {
-    position: "absolute",
-    top: 20,
-    left: 10,
+    // position: "absolute",
+    // top: 20,
+    // left: 10,
     width: "100%",
   },
   magazineHeaderTextWrapper: {

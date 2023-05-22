@@ -36,8 +36,14 @@ const Category = (props) => {
   const products = useSelector((state) => state.products.availableProducts);
   const maxCount = useSelector((state) => state.products.count);
   const location = useSelector((state) => state.location);
-  const { search, toggleSearch, pageParams, setPageParams } =
-    useContext(AuthContext);
+  const {
+    search,
+    toggleSearch,
+    pageParams,
+    setPageParams,
+    pageOrigin,
+    setPageOrigin,
+  } = useContext(AuthContext);
   const params = props?.route?.params?.cat
     ? props?.route?.params?.cat
     : pageParams;
@@ -141,6 +147,7 @@ const Category = (props) => {
   };
 
   const selectItemHandler = (item) => {
+    setPageOrigin("category");
     props.navigation.navigate("CompanyDetails", {
       company: item,
     });
@@ -196,7 +203,7 @@ const Category = (props) => {
             end={item.end}
             town={item.town}
             distance={item.distance}
-            logoUrl={item.imageUrl}
+            logoUrl={item.mainImage}
             discountAvailable={item.discountCode ? true : false}
             onSelect={() => {
               selectItemHandler(item);
@@ -209,6 +216,9 @@ const Category = (props) => {
         onEndReachedThreshold={0.3}
         onEndReached={fetchMoreData}
       />
+      <View>
+        <Text>spacer text</Text>
+      </View>
     </View>
   );
 };

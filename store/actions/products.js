@@ -31,7 +31,6 @@ export const fetchProducts = (
     clear = true;
     page = 1;
   }
-  console.log({ page });
   return async (dispatch) => {
     const response = await fetch(
       "https://app.disclosurediscounts.co.uk/api/v2/companies/distance",
@@ -70,24 +69,24 @@ export const fetchProducts = (
       loadedProducts.push({
         id: resData.companies[key].company_id,
         name: resData.companies[key].name,
+        directoryTitle: resData.companies[key].directory_title,
         town: resData.companies[key].town,
         postcode: resData.companies[key].postcode,
-        imageUrl: resData.companies[key].main_image,
+        distance: resData.companies[key].distance,
+        mainImage: resData.companies[key].main_image,
         title: resData.companies[key].offer_title,
         subtitle: resData.companies[key].offer_subtitle,
         description: resData.companies[key].offer_desc,
         end: resData.companies[key].end_date,
-        distance: resData.companies[key].distance,
-        bottomImage1: resData.companies[key].bottom_image_1,
-        logo: resData.companies[key].logo_url,
-        directoryTitle: resData.companies[key].directory_title,
         website: resData.companies[key].website,
         facebook: resData.companies[key].facebook,
         twitter: resData.companies[key].twitter,
         instagram: resData.companies[key].instagram,
         featured: resData.companies[key].featured,
+        discountAvailable: resData.companies[key].discount_available,
         discountCode: resData.companies[key].discount_code,
         backgroundImage: resData.companies[key].background_image,
+        updatedAt: resData.companies[key].updated_at,
       });
     }
 

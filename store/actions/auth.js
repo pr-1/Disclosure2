@@ -334,7 +334,6 @@ export const resetPassword = (email) => {
 };
 
 export const changePassword = (password1, token) => {
-  console.log({ password1 }, { token });
   return async (dispatch) => {
     const response = await fetch(`${API_URL}/users/changepassword`, {
       method: "POST",
@@ -365,7 +364,7 @@ export const changePassword = (password1, token) => {
     }
 
     const resData = await response.json();
-    console.log({ resData });
+
     dispatch(
       authenticate(
         resData.localId,

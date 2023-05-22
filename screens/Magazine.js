@@ -28,20 +28,8 @@ const Magazine = (props) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <PDFReader
-        source={{ uri }}
-        // onLoadComplete={(numberOfPages, filePath) => {
-        //   console.log(`Number of pages: ${numberOfPages}`);
-        // }}
-        // onPageChanged={(page, filePath) => {
-        //   console.log(`Current page: ${page}`);
-        // }}
-        // onPressLink={(uri) => {
-        //   console.log(`Link pressed: ${uri}`);
-        // }}
-        onError={setError}
-      />
+    <SafeAreaView style={{ flex: 1, marginBottom: 80 }}>
+      <PDFReader source={{ uri }} onError={setError} />
     </SafeAreaView>
   );
 };

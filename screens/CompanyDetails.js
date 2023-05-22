@@ -62,7 +62,7 @@ const CompanyDetails = ({ route }) => {
         ? selected?.discountCode.substring(0, codeLength)
         : selected?.discountCode;
   }
-  console.log({ selected });
+
   return (
     <View style={styles.center}>
       <Modal
@@ -158,15 +158,17 @@ const CompanyDetails = ({ route }) => {
         <View style={styles.container}>
           <View
             style={
-              selected?.logo ? styles.logoContainer : styles.noLogoContainer
+              selected?.mainImage
+                ? styles.logoContainer
+                : styles.noLogoContainer
             }
           >
             <Image
               style={styles.logo}
               source={
-                selected?.logo
-                  ? { uri: selected?.logo }
-                  : require("./../assets/icons/tmp/advertisingLogo.png")
+                selected?.mainImage
+                  ? { uri: selected?.mainImage }
+                  : require("./../assets/icons/all.png")
               }
               resizeMode="contain"
               resizeMethod="resize"

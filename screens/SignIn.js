@@ -14,6 +14,7 @@ import * as colours from "../constants/Colors";
 import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { useDispatch } from "react-redux";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { AuthContext } from "../components/context";
 import * as auth from "../store/actions/auth";
@@ -117,89 +118,100 @@ const SignInScreen = ({ navigation }) => {
         source={require("../assets/background.png")}
         style={styles.backgroundImage}
       >
-        <View style={styles.formWrapper}>
-          <View style={styles.formContainer}>
-            <Text style={styles.title}>Sign In</Text>
-            <View style={styles.inputWrapper}>
-              <Text style={styles.footer}>Email</Text>
-              <View style={styles.action}>
-                <FontAwesome name="user-o" size={20} />
-                <TextInput
-                  placeholder="Your Email"
-                  style={styles.textInput}
-                  autoCapitalize="none"
-                  onChangeText={(val) => textInputChange(val)}
-                  onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
-                  textContentType="username"
-                />
-                {data.check_textInputChange ? (
-                  <Feather name="check-circle" color="green" size={20} />
-                ) : null}
-              </View>
+        <KeyboardAwareScrollView
+          behaviour="padding"
+          scrollEnabled={true}
+          enableAutoAutomaticScroll={Platform.OS === "ios"}
+          keyboardVerticalOffset={150}
+          enableOnAndroid={true}
+          contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+          style={styles.screen}
+          keyboardShouldPersistTaps="always"
+        >
+          <View style={styles.formWrapper}>
+            <View style={styles.formContainer}>
+              <Text style={styles.title}>Sign In</Text>
+              <View style={styles.inputWrapper}>
+                <Text style={styles.footer}>Email</Text>
+                <View style={styles.action}>
+                  <FontAwesome name="user-o" size={20} />
+                  <TextInput
+                    placeholder="Your Email"
+                    style={styles.textInput}
+                    autoCapitalize="none"
+                    onChangeText={(val) => textInputChange(val)}
+                    onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
+                    textContentType="username"
+                  />
+                  {data.check_textInputChange ? (
+                    <Feather name="check-circle" color="green" size={20} />
+                  ) : null}
+                </View>
 
-              {data.isValidUser ? null : (
-                <Text style={styles.errorMsg}>Invalid email format.</Text>
-              )}
-            </View>
-            <View style={styles.inputWrapper}>
-              <Text style={[styles.footer, { marginTop: 35 }]}>Password</Text>
-              <View style={styles.action}>
-                <FontAwesome name="lock" size={20} />
-                <TextInput
-                  placeholder="Your Password"
-                  style={styles.textInput}
-                  autoCapitalize="none"
-                  secureTextEntry={data.secureTextEntry ? true : false}
-                  onChangeText={(val) => handlePasswordChange(val)}
-                  textContentType="password"
-                />
-                <TouchableOpacity onPress={updateSecureTextEntry}>
-                  {data.secureTextEntry ? (
-                    <Feather name="eye-off" color="grey" size={25} />
-                  ) : (
-                    <Feather name="eye" color="grey" size={25} />
-                  )}
+                {data.isValidUser ? null : (
+                  <Text style={styles.errorMsg}>Invalid email format.</Text>
+                )}
+              </View>
+              <View style={styles.inputWrapper}>
+                <Text style={[styles.footer, { marginTop: 35 }]}>Password</Text>
+                <View style={styles.action}>
+                  <FontAwesome name="lock" size={20} />
+                  <TextInput
+                    placeholder="Your Password"
+                    style={styles.textInput}
+                    autoCapitalize="none"
+                    secureTextEntry={data.secureTextEntry ? true : false}
+                    onChangeText={(val) => handlePasswordChange(val)}
+                    textContentType="password"
+                  />
+                  <TouchableOpacity onPress={updateSecureTextEntry}>
+                    {data.secureTextEntry ? (
+                      <Feather name="eye-off" color="grey" size={25} />
+                    ) : (
+                      <Feather name="eye" color="grey" size={25} />
+                    )}
+                  </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("ForgottenPassword");
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: colours.default.accent,
+                      marginTop: 20,
+                      fontSize: 12,
+                    }}
+                  >
+                    Forgot Password?
+                  </Text>
                 </TouchableOpacity>
               </View>
 
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate("ForgottenPassword");
+                  loginHandler(data.email, data.password);
                 }}
+                style={[
+                  styles.siginIn,
+                  {
+                    backgroundColor: "#000",
+                  },
+                ]}
               >
-                <Text
-                  style={{
-                    color: colours.default.accent,
-                    marginTop: 20,
-                    fontSize: 12,
-                  }}
-                >
-                  Forgot Password?
-                </Text>
+                <Text style={{ color: colours.default.accent }}>Sign In</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("SignUp")}
+                style={styles.siginIn}
+              >
+                <Text>No account? Sign up here.</Text>
               </TouchableOpacity>
             </View>
-
-            <TouchableOpacity
-              onPress={() => {
-                loginHandler(data.email, data.password);
-              }}
-              style={[
-                styles.siginIn,
-                {
-                  backgroundColor: "#000",
-                },
-              ]}
-            >
-              <Text style={{ color: colours.default.accent }}>Sign In</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("SignUp")}
-              style={styles.siginIn}
-            >
-              <Text>No account? Sign up here.</Text>
-            </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       </ImageBackground>
     </View>
   );
@@ -219,8 +231,9 @@ const styles = StyleSheet.create({
     resizeMode: "cover", // or 'stretch',
     justifyContent: "center",
   },
+
   formWrapper: {
-    justifyContent: "center",
+    // justifyContent: "center",
     alignItems: "center",
   },
   formContainer: {
