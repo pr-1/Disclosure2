@@ -6,6 +6,7 @@ import {
   Dimensions,
   ImageBackground,
   Animated,
+  Image,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -85,17 +86,12 @@ const MemberId = (props) => {
               </View>
             </ImageBackground>
           </Animated.View>
-          <View style={styles.blackCardContainer}>
-            <View style={styles.innerBlackCardContainer}>
-              <Text style={styles.mainText}>
-                Disclosure<Text style={styles.stop}>.</Text>
-              </Text>
-              <Text style={styles.bottomText}>DISCOUNTS</Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>New Offers</Text>
+          <Image
+            source={require("./../assets/icons/DisclosureLogo.jpg")}
+            style={styles.blackCardContainer}
+            resizeMode="contain"
+            resizeMethod="resize"
+          />
         </View>
       </View>
     </View>
@@ -161,32 +157,8 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     width: width * 0.78,
     borderRadius: width * 0.036,
-    alignItems: "center",
-    paddingVertical: width * 0.07,
-
     top: -width * 0.04,
-  },
-  innerBlackCardContainer: {
-    borderColor: Colors.accent,
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderRadius: width * 0.036,
-    alignItems: "center",
-    paddingHorizontal: width * 0.07,
-    paddingVertical: width * 0.02,
-  },
-  mainText: {
-    color: "white",
-    fontSize: width * 0.086,
-    fontFamily: "YesevaOne",
-  },
-  stop: {
-    color: Colors.accent,
-  },
-  bottomText: {
-    color: "white",
-    fontSize: width * 0.043,
-    fontFamily: "YesevaOne",
+    height: width * 0.4,
   },
 });
 

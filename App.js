@@ -48,6 +48,7 @@ const App = () => {
     search: false,
     params: null,
     origin: "Home",
+    pageStack: ["Home"],
   };
 
   const loginReducer = (prevState, action) => {
@@ -93,6 +94,11 @@ const App = () => {
         return {
           ...prevState,
           origin: action.origin,
+        };
+      case "SET_PAGE_STACK":
+        return {
+          ...prevState,
+          pageStack: action.pageStack,
         };
     }
   };
@@ -146,6 +152,26 @@ const App = () => {
         dispatch({ type: "SET_ORIGIN_PAGE", origin: origin });
       },
       pageOrigin: loginState.origin,
+      pageStack: loginState.pageStack,
+      addPageToStack: async (page) => {
+        let stack = loginState.pageStack;
+        if (page !== "Home") {
+          stack.push(page);
+        } else {
+          stack = ["Home"];
+        }
+
+        dispatch({ type: "SET_PAGE_STACK", pageStack: stack });
+      },
+      removePageFromStack: async () => {
+        let stack = loginState.pageStack;
+
+        stack.pop();
+        if (stack.length === 0) {
+          stack = ["Home"];
+        }
+        dispatch({ type: "SET_PAGE_STACK", pageStack: stack });
+      },
     }),
     [loginState]
   );

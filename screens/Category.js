@@ -36,14 +36,8 @@ const Category = (props) => {
   const products = useSelector((state) => state.products.availableProducts);
   const maxCount = useSelector((state) => state.products.count);
   const location = useSelector((state) => state.location);
-  const {
-    search,
-    toggleSearch,
-    pageParams,
-    setPageParams,
-    pageOrigin,
-    setPageOrigin,
-  } = useContext(AuthContext);
+  const { search, toggleSearch, pageParams, setPageParams, addPageToStack } =
+    useContext(AuthContext);
   const params = props?.route?.params?.cat
     ? props?.route?.params?.cat
     : pageParams;
@@ -147,7 +141,8 @@ const Category = (props) => {
   };
 
   const selectItemHandler = (item) => {
-    setPageOrigin("category");
+    // setPageOrigin("category");
+    addPageToStack("category");
     props.navigation.navigate("CompanyDetails", {
       company: item,
     });

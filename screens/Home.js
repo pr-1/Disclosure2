@@ -11,6 +11,7 @@ import {
   SafeAreaView,
   Dimensions,
   Animated,
+  Button,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -33,7 +34,13 @@ const Home = ({ navigation }) => {
   const slideIndexRef = useRef();
   const dispatch = useDispatch();
 
-  const { search, toggleSearch, setPageOrigin } = useContext(AuthContext);
+  const {
+    search,
+    toggleSearch,
+    setPageOrigin,
+    addPageToStack,
+    removePageFromStack,
+  } = useContext(AuthContext);
   const advertisingSpace = useSelector(
     (state) => state.magazine.featuredCompanies
   );
@@ -145,10 +152,7 @@ const Home = ({ navigation }) => {
 
   if (offers && offers.length > 0) {
     return (
-      <ScrollView
-        contentContainerStyle={styles.scrollViewContainer}
-        style={styles.scrollView}
-      >
+      <View style={styles.scrollView}>
         <View style={styles.container}>
           {search ? (
             <SearchBar
@@ -158,43 +162,8 @@ const Home = ({ navigation }) => {
               category=""
             />
           ) : null}
-          <View style={styles.headerContainer}></View>
 
           <View style={styles.blockContainer}>
-            {/* <View style={styles.scrollContainer}>
-              <Animated.FlatList
-                ref={slideIndexRef}
-                horizontal
-                pointerEvents={search ? "none" : "auto"}
-                pagingEnabled={true}
-                showsHorizontalScrollIndicator={false}
-                legacyImplementation={false}
-                snapToInterval={width}
-                decelerationRate="fast"
-                bounces={false}
-                removeClippedSubviews={true}
-                onScroll={Animated.event(
-                  [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-                  { useNativeDriver: true }
-                )}
-                data={offers}
-                renderItem={(item) => renderOffer(item)}
-                keyExtractor={(_, index) => index.toString()}
-                style={{ width: width, height: "100%" }}
-                onScrollToIndexFailed={(info) => {
-                  const wait = new Promise((resolve) =>
-                    setTimeout(resolve, 500)
-                  );
-                  wait.then(() => {
-                    flatList.current?.scrollToIndex({
-                      index: info.index,
-                      animated: true,
-                    });
-                  });
-                }}
-              />
-            </View> */}
-
             {/* ************* Categories Directory Block ************* */}
 
             <View style={styles.innerContainer}>
@@ -202,6 +171,7 @@ const Home = ({ navigation }) => {
                 style={styles.linksDirectoryWrapper}
                 onPress={() => {
                   clearInterval();
+                  addPageToStack("Home");
                   RootNavigation.navigate("Categories");
                 }}
               >
@@ -228,7 +198,7 @@ const Home = ({ navigation }) => {
               <TouchableOpacity
                 style={styles.linksDirectoryWrapper}
                 onPress={() => {
-                  setPageOrigin("Home");
+                  addPageToStack("Home");
                   RootNavigation.navigate("category", { cat: "all" });
                 }}
               >
@@ -260,6 +230,7 @@ const Home = ({ navigation }) => {
               <TouchableOpacity
                 style={styles.linksDirectoryWrapper}
                 onPress={() => {
+                  addPageToStack("Home");
                   RootNavigation.navigate("Magazine");
                 }}
               >
@@ -301,7 +272,7 @@ const Home = ({ navigation }) => {
             </View>
           </View>
         </View>
-      </ScrollView>
+      </View>
     );
   }
 };
@@ -348,12 +319,17 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flexDirection: "row",
-    height: (height - 100) / 4,
+    height: (height - 170) / 4,
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
+    borderColor: "black",
+    borderWidth: 1,
   },
-
+  linksDirectoryWrapper: {
+    height: "100%",
+    width: "100%",
+  },
   newOfferContainer: {
     height: "auto",
     flexDirection: "row",
@@ -405,11 +381,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
+    height: "100%",
+    flexDirection: "column",
+    justifyContent: "space-evenly",
   },
   discountImage: {
     width: "100%",
-    height: ((height - 100) / 4) * 0.8,
-    marginBottom: -20,
+    height: "45%",
+    // height: ((height - 100) / 4) * 0.7,
+    // marginBottom: -20,
   },
   discountTextContainer: {
     backgroundColor: "rgba(255,255,255,0.5)",

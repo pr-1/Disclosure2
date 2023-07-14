@@ -8,7 +8,7 @@ import * as ProductActions from "../../store/actions/products";
 const BottomTabBar = ({ navigation }) => {
   const url = useSelector((state) => state.magazine.magazine);
   const [magazineUrl, setMagazineUrl] = useState("");
-  const { toggleSearch, search } = useContext(AuthContext);
+  const { toggleSearch, search, addPageToStack } = useContext(AuthContext);
 
   const dispatch = useDispatch();
 
@@ -29,6 +29,7 @@ const BottomTabBar = ({ navigation }) => {
     if (search) {
       toggleSearch();
     }
+    addPageToStack("Home");
     navigation.navigate(page);
   };
 

@@ -3,7 +3,7 @@
     "name": "Disclosure Hub",
     "slug": "disclosure-hub",
     "version": "2.0.5",
-    "orientation": "default",
+    "orientation": "portrait",
     "icon": "./assets/disclosurelogo.png",
     "userInterfaceStyle": "dark",
     "splash": {
@@ -14,12 +14,10 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "com.foxwylie.disclosure-hub",
-      "buildNumber": "2.0.4",
+      "buildNumber": "2.0.5",
       "supportsTablet": true,
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "This app uses your location to show you the offers and participating businesses closest to you."
@@ -32,9 +30,7 @@
         "foregroundImage": "./assets/white.png",
         "backgroundColor": "#000"
       },
-      "permissions": [
-        "ACCESS_FINE_LOCATION"
-      ]
+      "permissions": ["ACCESS_FINE_LOCATION"]
     },
     "web": {
       "favicon": "./assets/favicon.png"

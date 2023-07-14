@@ -33,6 +33,11 @@ function LogoTitle() {
   );
 }
 
+const backButtonHandler = (pageOrigin, removePageFromStack) => {
+  removePageFromStack();
+  RootNavigation.navigate(pageOrigin);
+};
+
 const drawerOptions = {
   headerTintColor: "#fff",
   headerTitleStyle: {
@@ -61,7 +66,7 @@ const drawerOptions = {
   ),
 };
 
-const categoryOptions = (pageOrigin) => {
+const categoryOptions = (pageOrigin, removePageFromStack) => {
   return {
     headerTintColor: "#fff",
     headerTitleStyle: {
@@ -83,7 +88,9 @@ const categoryOptions = (pageOrigin) => {
     unmountOnBlur: true,
     headerShown: true,
     headerLeft: () => (
-      <TouchableOpacity onPress={() => RootNavigation.navigate(pageOrigin)}>
+      <TouchableOpacity
+        onPress={() => backButtonHandler(pageOrigin, removePageFromStack)}
+      >
         <AntDesign name="leftcircleo" color="white" size={30} />
       </TouchableOpacity>
     ),
@@ -100,7 +107,9 @@ const categoryOptions = (pageOrigin) => {
 };
 
 const MainDrawerNavigator = () => {
-  const { pageParams, pageOrigin } = useContext(AuthContext);
+  const { pageStack, removePageFromStack } = useContext(AuthContext);
+
+  let page = pageStack.at(-1);
 
   return (
     <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />}>
@@ -113,24 +122,24 @@ const MainDrawerNavigator = () => {
       <Drawer.Screen
         name="Categories"
         component={Categories}
-        options={() => categoryOptions("Home")}
+        options={() => categoryOptions(page, removePageFromStack)}
       />
       <Drawer.Screen
         name="All Discounts"
         component={Category}
         initialParams={{ cat: "all" }}
-        options={() => categoryOptions(pageOrigin)}
+        options={() => categoryOptions(page, removePageFromStack)}
       />
       <Drawer.Screen
         name="Directory"
         component={Category}
         initialParams={{ cat: "a-z" }}
-        options={() => categoryOptions(pageOrigin)}
+        options={() => categoryOptions(page, removePageFromStack)}
       />
       <Drawer.Screen
         name="category"
         component={Category}
-        options={() => categoryOptions(pageOrigin)}
+        options={() => categoryOptions(page, removePageFromStack)}
       />
       <Drawer.Screen
         name="Profile"
@@ -140,7 +149,7 @@ const MainDrawerNavigator = () => {
       <Drawer.Screen
         name="CompanyDetails"
         component={CompanyDetails}
-        options={() => categoryOptions(pageOrigin)}
+        options={() => categoryOptions(page, removePageFromStack)}
       />
       <Drawer.Screen
         name="ResetPassword"
