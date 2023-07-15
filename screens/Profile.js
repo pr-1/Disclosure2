@@ -79,22 +79,22 @@ const Profile = ({ navigation }) => {
     fname: "",
     lname: "",
     email: "",
-    phone: "",
+    // phone: "",
     postcode: "",
-    dob: "",
+    // dob: "",
     gender: "",
     mailinglist: false,
     check_nameInputChange: false,
     check_textInputChange: false,
-    check_phoneInputChange: false,
+    // check_phoneInputChange: false,
     check_postcodeInputChange: false,
     secureTextEntry: true,
     confirmSecureTextEntry: true,
     isValidName: true,
     isValidEmail: true,
-    isValidPhone: true,
+    // isValidPhone: true,
     isValidPostcode: true,
-    isValidDateOfBirth: true,
+    // isValidDateOfBirth: true,
     isValidGender: true,
     color: "grey",
   });
@@ -151,19 +151,19 @@ const Profile = ({ navigation }) => {
     });
   };
 
-  function showDatePicker() {
-    setDatePicker(true);
-  }
+  // function showDatePicker() {
+  //   setDatePicker(true);
+  // }
 
-  function onDateSelected(event, value) {
-    setDate(value);
-    setData({
-      ...data.current,
-      dob: value,
-      isValidDateOfBirth: true,
-    });
-    setDatePicker(false);
-  }
+  // function onDateSelected(event, value) {
+  //   setDate(value);
+  //   setData({
+  //     ...data.current,
+  //     dob: value,
+  //     isValidDateOfBirth: true,
+  //   });
+  //   setDatePicker(false);
+  // }
 
   useEffect(() => {
     setData({
@@ -316,19 +316,19 @@ const Profile = ({ navigation }) => {
     }
   };
 
-  const handleValidPhone = (val) => {
-    if (val.trim().length >= 10 && phoneRegex.test(val)) {
-      setData({
-        ...data.current,
-        isValidPhone: true,
-      });
-    } else {
-      setData({
-        ...data.current,
-        isValidPhone: false,
-      });
-    }
-  };
+  // const handleValidPhone = (val) => {
+  //   if (val.trim().length >= 10 && phoneRegex.test(val)) {
+  //     setData({
+  //       ...data.current,
+  //       isValidPhone: true,
+  //     });
+  //   } else {
+  //     setData({
+  //       ...data.current,
+  //       isValidPhone: false,
+  //     });
+  //   }
+  // };
 
   const handleValidPostcode = (val) => {
     if (val.trim().length >= 6 && postcodeRegex.test(val.toUpperCase())) {
@@ -360,9 +360,9 @@ const Profile = ({ navigation }) => {
   }, [data]);
 
   const updateHandler = async () => {
-    if (data.dob === "") {
-      setData({ ...data.current, isValidDateOfBirth: false });
-    }
+    // if (data.dob === "") {
+    //   setData({ ...data.current, isValidDateOfBirth: false });
+    // }
     if (data.gender === "") {
       setData({ ...data.current, isValidGender: false });
     }
@@ -487,7 +487,7 @@ const Profile = ({ navigation }) => {
                 )}
               </View>
 
-              <View style={styles.inputWrapper}>
+              {/* <View style={styles.inputWrapper}>
                 <Text style={[styles.footer, { marginTop: 25 }]}>Phone</Text>
                 <View style={styles.action}>
                   <Feather name="phone" size={20} />
@@ -508,7 +508,7 @@ const Profile = ({ navigation }) => {
                 {data.current.isValidPhone ? null : (
                   <Text style={styles.errorMsg}>Invalid phone format.</Text>
                 )}
-              </View>
+              </View> */}
 
               <View style={styles.inputWrapper}>
                 <Text style={[styles.footer, { marginTop: 25 }]}>Postcode</Text>
@@ -533,7 +533,7 @@ const Profile = ({ navigation }) => {
                   <Text style={styles.errorMsg}>Invalid postcode format.</Text>
                 )}
               </View>
-              <View style={styles.inputWrapper}>
+              {/* <View style={styles.inputWrapper}>
                 <Text style={[styles.footer, { marginTop: 25 }]}>
                   Date of Birth
                 </Text>
@@ -577,7 +577,7 @@ const Profile = ({ navigation }) => {
                 {data.current.isValidDateOfBirth ? null : (
                   <Text style={styles.errorMsg}>Invalid date of birth.</Text>
                 )}
-              </View>
+              </View> */}
 
               <View style={styles.inputWrapper}>
                 <Text style={[styles.footer, { marginTop: 25 }]}>

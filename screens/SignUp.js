@@ -14,7 +14,7 @@ import { useDispatch } from "react-redux";
 import * as Colors from "../constants/Colors";
 import { Entypo, FontAwesome, Fontisto, Feather } from "@expo/vector-icons";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import DateTimePicker from "@react-native-community/datetimepicker";
+// import DateTimePicker from "@react-native-community/datetimepicker";
 import { RadioButton } from "react-native-paper";
 import * as auth from "../store/actions/auth";
 import AsyncAlert from "../components/UI/AsyncAlert";
@@ -73,14 +73,14 @@ const SignUp = ({ navigation }) => {
     passwordMessage: "",
     check_nameInputChange: false,
     check_textInputChange: false,
-    check_phoneInputChange: false,
+    // check_phoneInputChange: false,
     check_postcodeInputChange: false,
     check_passwordInputChange: false,
     secureTextEntry: true,
     confirmSecureTextEntry: true,
     isValidName: true,
     isValidEmail: true,
-    isValidPhone: true,
+    // isValidPhone: true,
     isValidPostcode: true,
     isValidPassword: true,
     isValidPasswordMatch: true,
@@ -91,8 +91,8 @@ const SignUp = ({ navigation }) => {
   const { signUp } = useContext(AuthContext);
   const dispatch = useDispatch();
   const [form, setForm] = useState(false);
-  const [datePicker, setDatePicker] = useState(false);
-  const [date, setDate] = useState(new Date());
+  // const [datePicker, setDatePicker] = useState(false);
+  // const [date, setDate] = useState(new Date());
   const [gender, setGender] = useState();
   const [mailingList, setMailingList] = useState(false);
   const [error, setError] = useState("");
@@ -118,19 +118,19 @@ const SignUp = ({ navigation }) => {
     });
   };
 
-  function showDatePicker() {
-    setDatePicker(true);
-  }
+  // function showDatePicker() {
+  //   setDatePicker(true);
+  // }
 
-  function onDateSelected(event, value) {
-    setDate(value);
-    setData({
-      ...data,
-      dob: value,
-      isValidDateOfBirth: true,
-    });
-    setDatePicker(false);
-  }
+  // function onDateSelected(event, value) {
+  //   setDate(value);
+  //   setData({
+  //     ...data,
+  //     dob: value,
+  //     isValidDateOfBirth: true,
+  //   });
+  //   setDatePicker(false);
+  // }
 
   useEffect(() => {
     setData({
@@ -208,23 +208,23 @@ const SignUp = ({ navigation }) => {
 
         break;
 
-      case "phone":
-        val = val.replace(" ", "");
+      // case "phone":
+      //   val = val.replace(" ", "");
 
-        if (val.length > 10) {
-          setData({
-            ...data,
-            phone: val,
-            check_phoneInputChange: true,
-          });
-        } else {
-          setData({
-            ...data,
-            phone: "",
-            check_phoneInputChange: false,
-          });
-        }
-        break;
+      //   if (val.length > 10) {
+      //     setData({
+      //       ...data,
+      //       phone: val,
+      //       check_phoneInputChange: true,
+      //     });
+      //   } else {
+      //     setData({
+      //       ...data,
+      //       phone: "",
+      //       check_phoneInputChange: false,
+      //     });
+      //   }
+      //   break;
 
       case "postcode":
         if (val.length !== 0 && postcodeRegex.test(val.toUpperCase())) {
@@ -283,19 +283,19 @@ const SignUp = ({ navigation }) => {
     }
   };
 
-  const handleValidPhone = (val) => {
-    if (val.trim().length >= 10 && phoneRegex.test(val)) {
-      setData({
-        ...data,
-        isValidPhone: true,
-      });
-    } else {
-      setData({
-        ...data,
-        isValidPhone: false,
-      });
-    }
-  };
+  // const handleValidPhone = (val) => {
+  //   if (val.trim().length >= 10 && phoneRegex.test(val)) {
+  //     setData({
+  //       ...data,
+  //       isValidPhone: true,
+  //     });
+  //   } else {
+  //     setData({
+  //       ...data,
+  //       isValidPhone: false,
+  //     });
+  //   }
+  // };
 
   const handleValidPostcode = (val) => {
     if (val.trim().length >= 6 && postcodeRegex.test(val.toUpperCase())) {
@@ -312,7 +312,7 @@ const SignUp = ({ navigation }) => {
   };
 
   const handleValidPassword = (val) => {
-    if (val.trim().length >= 1) {
+    if (val.trim().length < 8) {
       setData({
         ...data,
         isValidPassword: false,
@@ -424,10 +424,10 @@ const SignUp = ({ navigation }) => {
     if (
       data.check_nameInputChange &&
       data.check_textInputChange &&
-      data.check_phoneInputChange &&
+      // data.check_phoneInputChange &&
       data.check_postcodeInputChange &&
       data.check_passwordInputChange &&
-      data.dob &&
+      // data.dob &&
       data.gender
     ) {
       setForm(true);
@@ -437,9 +437,9 @@ const SignUp = ({ navigation }) => {
   }, [data]);
 
   const signUpHandler = async () => {
-    if (data.dob === "") {
-      setData({ ...data, isValidDateOfBirth: false });
-    }
+    // if (data.dob === "") {
+    //   setData({ ...data, isValidDateOfBirth: false });
+    // }
     if (data.gender === "") {
       setData({ ...data, isValidGender: false });
     }
@@ -543,7 +543,7 @@ const SignUp = ({ navigation }) => {
                 )}
               </View>
 
-              <View style={styles.inputWrapper}>
+              {/* <View style={styles.inputWrapper}>
                 <Text style={[styles.footer, { marginTop: 25 }]}>Phone</Text>
                 <View style={styles.action}>
                   <Feather name="phone" size={20} />
@@ -563,7 +563,7 @@ const SignUp = ({ navigation }) => {
                 {data.isValidPhone ? null : (
                   <Text style={styles.errorMsg}>Invalid phone format.</Text>
                 )}
-              </View>
+              </View> */}
 
               <View style={styles.inputWrapper}>
                 <Text style={[styles.footer, { marginTop: 25 }]}>Postcode</Text>
@@ -587,7 +587,7 @@ const SignUp = ({ navigation }) => {
                   <Text style={styles.errorMsg}>Invalid postcode format.</Text>
                 )}
               </View>
-              <View style={styles.inputWrapper}>
+              {/* <View style={styles.inputWrapper}>
                 <Text style={[styles.footer, { marginTop: 25 }]}>
                   Date of Birth
                 </Text>
@@ -630,7 +630,7 @@ const SignUp = ({ navigation }) => {
                 {data.isValidDateOfBirth ? null : (
                   <Text style={styles.errorMsg}>Invalid date of birth.</Text>
                 )}
-              </View>
+              </View> */}
 
               <View style={styles.inputWrapper}>
                 <Text style={[styles.footer, { marginTop: 25 }]}>
