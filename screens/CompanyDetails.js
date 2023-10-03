@@ -14,32 +14,33 @@ import Colors from "../constants/Colors";
 import { AntDesign } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
+import { SocialIcon, Icon } from "react-native-elements";
 
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
 
 const CompanyDetails = ({ route }) => {
+  const handlePress = async (url) => {
+    // Checking if the link is supported for links with custom URL scheme.
+    const supported = await Linking.canOpenURL(url);
+
+    if (supported) {
+      // Opening the link with some app, if the URL scheme is "http" the web link should be opened
+      // by some browser in the mobile
+      await Linking.openURL(url);
+    } else {
+      Alert.alert(`Don't know how to open this URL: ${url}`);
+    }
+  };
   const selected = route.params.company;
+  console.log(selected);
   const [modalVisible, setModalVisible] = useState(false);
 
   const copyToClipboard = () => {
     Clipboard.setStringAsync(selected.discountCode);
   };
 
-  let cloud, code, title;
-
-  if (selected?.instagram) {
-    cloud = { type: "instagram", url: selected?.instagram };
-  }
-  if (selected?.twitter) {
-    cloud = { type: "twitter", url: selected?.twitter };
-  }
-  if (selected?.facebook) {
-    cloud = { type: "facebook", url: selected?.facebook };
-  }
-  if (selected?.website) {
-    cloud = { type: "website", url: selected?.website };
-  }
+  let code, title;
 
   const year = selected.end.substring(0, 4);
   const month = selected.end.substring(5, 7);
@@ -98,12 +99,14 @@ const CompanyDetails = ({ route }) => {
                   />
                   <View style={styles.ticketTextContainer}>
                     <View style={styles.offerCodeContainer}>
-                      <Text style={styles.codeText}>
-                        {title}
-                        {" : "}
-                      </Text>
-                      <Text style={styles.codeText}>{code}</Text>
+                      <Text style={[styles.nameText , {color: "white"}]}>{selected.name}</Text>
+                      
                     </View>
+                    <View style={styles.offerCodeContainer}>
+                      <Text style={styles.codeText}>{selected.title}</Text>
+                      
+                    </View>
+                    
                     <View style={styles.expiryDateContainer}>
                       <Text style={styles.dateText}>Expiry date: {date}</Text>
                     </View>
@@ -115,19 +118,6 @@ const CompanyDetails = ({ route }) => {
                   </View>
                 </TouchableOpacity>
               </View>
-              <View style={styles.bottomTextContainer}>
-                <TouchableOpacity onPress={() => Linking.openURL(cloud?.url)}>
-                  <Text style={styles.bottomText}>
-                    Visit our {cloud?.type}: {cloud?.url}
-                  </Text>
-                </TouchableOpacity>
-
-                <Text style={styles.bottomText}>
-                  Copy and paste the code to use this voucher
-                </Text>
-              </View>
-
-              {/* <Button title="View copied text" onPress={fetchCopiedText} /> */}
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => setModalVisible(!modalVisible)}
@@ -186,15 +176,90 @@ const CompanyDetails = ({ route }) => {
               <View style={styles.nameTextContainer}>
                 <Text style={styles.nameText}>{selected?.name}</Text>
               </View>
+              <View
+                style={{
+                  marginBottom: 20,
+                }}
+              >
+                <Text style={styles.titleText}>
+                  {selected?.description}. {selected?.title}.{" "}
+                  {selected?.subtitle}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "column",
+                  justifyContent: "flex-start",
+                  alignItems: "flex-start",
+                  marginBottom: 20,
+                }}
+              >
+                <Text style={styles.nameText}>Website</Text>
+                <Icon
+                  name="language"
+                  iconSize={14}
+                  onPress={() => handlePress(selected?.website)}
+                />
+              </View>
               <View style={styles.nameTextContainer}>
-                <Text style={styles.titleText}>{selected?.title}</Text>
-                <Text style={styles.titleText}>{selected?.subtitle}</Text>
+                <Text style={styles.nameText}>Socials</Text>
               </View>
-              <View style={styles.offerTextContainer}>
-                <Text style={styles.nameText}>Offer Available</Text>
+              <View style={styles.socialContainer}>
+                {selected?.instagram && (
+                  <View>
+                    <SocialIcon
+                      type="instagram"
+                      light
+                      raised={false}
+                      onPress={() => handlePress(selected?.instagram)}
+                    />
+                  </View>
+                )}
+                {selected?.facebook && (
+                  <View>
+                    <SocialIcon
+                      type="facebook"
+                      light
+                      raised={false}
+                      onPress={() => handlePress(selected?.facebook)}
+                    />
+                  </View>
+                )}
+                {selected?.twitter && (
+                  <View>
+                    <SocialIcon
+                      type="twitter"
+                      light
+                      raised={false}
+                      onPress={() => handlePress(selected?.twitter)}
+                    />
+                  </View>
+                )}
               </View>
-              <View>
-                <Text style={styles.titleText}>{selected?.description}</Text>
+              {(selected?.email || selected?.phone) && (
+                <View style={styles.nameTextContainer}>
+                  <Text style={styles.nameText}>Contact</Text>
+                </View>
+              )}
+              <View style={styles.socialContainer}>
+                {selected?.email && (
+                  <View>
+                    <Icon
+                      name="email"
+                      iconSize={14}
+                      onPress={() => handlePress(`mailto:${selected.email}`)}
+                    />
+                  </View>
+                )}
+                {selected?.phone && (
+                  <View>
+                    <Icon
+                      name="phone"
+                      iconSize={14}
+                      onPress={() => handlePress(`tel:${selected.phone}`)}
+                    />
+                  </View>
+                )}
               </View>
             </ScrollView>
             {selected?.discountCode ? (
@@ -206,6 +271,18 @@ const CompanyDetails = ({ route }) => {
               </TouchableOpacity>
             ) : null}
           </View>
+          {selected?.discountAvailable && (
+            <View style={styles.offerTextContainer}>
+              <View style={styles.nameTextContainer}>
+                <Text style={styles.nameText}>Offer Available</Text>
+              </View>
+              <View>
+                <Text style={styles.titleText}>
+                  Exclusive discount AVAILABLE
+                </Text>
+              </View>
+            </View>
+          )}
         </View>
       </View>
     </View>
@@ -256,13 +333,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
+  socialContainer: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "flex-start",
+    gap: 20,
+    bottom: 10,
+  },
   logo: {
     height: "90%",
     width: "90%",
   },
   descriptionContainer: {
-    height: "60%",
+    height: "50%",
     width: "100%",
     backgroundColor: "white",
     borderRadius: 20,
@@ -276,7 +359,7 @@ const styles = StyleSheet.create({
     fontSize: width > 600 ? 25 : 20,
   },
   nameTextContainer: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   titleText: {
     fontFamily: "Kollektif",
@@ -284,6 +367,12 @@ const styles = StyleSheet.create({
   },
   offerTextContainer: {
     marginBottom: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderColor: Colors.accent,
+    marginTop: width > 600 ? 30 : 35,
+    backgroundColor: "white",
   },
   discountButtonContainer: {
     position: "absolute",
@@ -323,6 +412,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 20,
+    
   },
   modalBackgroundImage: {
     width: "100%",
@@ -362,11 +452,10 @@ const styles = StyleSheet.create({
   },
   ticket: {
     width: "95%",
-    height: width > 600 ? 160 : 90,
-    marginTop: 30,
+    marginTop: 0,
   },
   ticketImage: {
-    height: " 100%",
+    height: 150,
     width: "100%",
   },
   ticketTextContainer: {
@@ -378,7 +467,7 @@ const styles = StyleSheet.create({
   },
   codeText: {
     fontFamily: "Kollektif",
-    fontSize: width > 600 ? 35 : 19,
+    fontSize: width > 600 ? 22 : 14,
     color: "white",
   },
   dateText: {
@@ -388,7 +477,7 @@ const styles = StyleSheet.create({
   },
   offerCodeContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     marginBottom: width > 600 ? 20 : 10,
     width: "100%",
   },
