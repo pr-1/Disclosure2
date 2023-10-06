@@ -89,30 +89,48 @@ const CompanyDetails = ({ route }) => {
                 <Text style={styles.modalTitle}>Discount</Text>
                 <Text style={styles.modalTitle}>Voucher</Text>
               </View>
-              <View style={styles.ticket}>
+              <View>
                 <TouchableOpacity onPress={() => copyToClipboard()}>
-                  <Image
-                    style={styles.ticketImage}
-                    source={require("./../assets/icons/Voucher.png")}
-                    resizeMode="cover"
-                    resizeMethod="resize"
-                  />
                   <View style={styles.ticketTextContainer}>
-                    <View style={styles.offerCodeContainer}>
-                      <Text style={[styles.nameText , {color: "white"}]}>{selected.name}</Text>
-                      
+                    <View style={styles.offerTextContainer}>
+                      <Text
+                        style={[
+                          styles.nameText,
+                          { color: "white", textAlign: "center" },
+                        ]}
+                      >
+                        {selected.name}
+                      </Text>
                     </View>
                     <View style={styles.offerCodeContainer}>
-                      <Text style={styles.codeText}>{selected.title}</Text>
-                      
+                      <Text
+                        style={[
+                          styles.codeText,
+                          { color: "white", textAlign: "center" },
+                        ]}
+                      >
+                        {selected.title}
+                      </Text>
                     </View>
-                    
+
                     <View style={styles.expiryDateContainer}>
-                      <Text style={styles.dateText}>Expiry date: {date}</Text>
+                      <Text
+                        style={[
+                          styles.dateText,
+                          { color: "white", textAlign: "center" },
+                        ]}
+                      >
+                        Expiry date: {date}
+                      </Text>
                     </View>
                     <View style={styles.lastTextContainer}>
-                      <Text style={styles.lastText}>
-                        Click ticket to copy code to clipboard
+                      <Text
+                        style={[
+                          styles.lastText,
+                          { color: "white", textAlign: "center" },
+                        ]}
+                      >
+                        {selected?.subtitle}
                       </Text>
                     </View>
                   </View>
@@ -267,22 +285,21 @@ const CompanyDetails = ({ route }) => {
                 style={styles.discountButtonContainer}
                 onPress={() => setModalVisible(true)}
               >
-                <Text style={styles.discountButtonText}>GET DISCOUNT</Text>
+                {selected?.discountAvailable && (
+                  <View style={styles.offerTextContainer}>
+                    <View style={styles.nameTextContainer}>
+                      <Text style={styles.nameText}>Offer Available</Text>
+                    </View>
+                    <View>
+                      <Text style={styles.titleText}>
+                        Exclusive discount AVAILABLE
+                      </Text>
+                    </View>
+                  </View>
+                )}
               </TouchableOpacity>
             ) : null}
           </View>
-          {selected?.discountAvailable && (
-            <View style={styles.offerTextContainer}>
-              <View style={styles.nameTextContainer}>
-                <Text style={styles.nameText}>Offer Available</Text>
-              </View>
-              <View>
-                <Text style={styles.titleText}>
-                  Exclusive discount AVAILABLE
-                </Text>
-              </View>
-            </View>
-          )}
         </View>
       </View>
     </View>
@@ -371,14 +388,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 20,
     borderColor: Colors.accent,
-    marginTop: width > 600 ? 30 : 35,
-    backgroundColor: "white",
   },
   discountButtonContainer: {
     position: "absolute",
     bottom: width > 600 ? -30 : -35,
-    paddingVertical: width > 600 ? 20 : 10,
-    paddingHorizontal: width > 600 ? 25 : 15,
     borderRadius: 40,
     borderColor: Colors.accent,
     borderWidth: 4,
@@ -412,7 +425,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 20,
-    
   },
   modalBackgroundImage: {
     width: "100%",
@@ -453,17 +465,18 @@ const styles = StyleSheet.create({
   ticket: {
     width: "95%",
     marginTop: 0,
+    textAlign: "center",
   },
   ticketImage: {
     height: 150,
     width: "100%",
   },
   ticketTextContainer: {
-    position: "absolute",
-    left: width > 600 ? 60 : 25,
-    right: width > 600 ? 60 : 25,
-    paddingTop: width > 600 ? 30 : 10,
-    width: "80%",
+    paddingBottom: 40,
+    paddingTop: 10,
+    textAlign: "center",
+    width: "100%",
+    backgroundColor: "black",
   },
   codeText: {
     fontFamily: "Kollektif",
@@ -476,8 +489,6 @@ const styles = StyleSheet.create({
     color: "white",
   },
   offerCodeContainer: {
-    flexDirection: "row",
-    // justifyContent: "space-between",
     marginBottom: width > 600 ? 20 : 10,
     width: "100%",
   },
@@ -487,7 +498,7 @@ const styles = StyleSheet.create({
   lastTextContainer: {},
   lastText: {
     fontFamily: "Kollektif",
-    fontSize: width > 600 ? 18 : 12,
+    fontSize: 16,
     color: "white",
   },
   bottomTextContainer: {
