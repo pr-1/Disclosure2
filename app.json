@@ -2,7 +2,7 @@
   "expo": {
     "name": "Disclosure Hub",
     "slug": "disclosure-hub",
-    "version": "2.0.5",
+    "version": "2.0.7",
     "orientation": "portrait",
     "icon": "./assets/disclosurelogo.png",
     "userInterfaceStyle": "dark",
@@ -14,10 +14,12 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "bundleIdentifier": "com.foxwylie.disclosure-hub",
-      "buildNumber": "2.0.5",
+      "buildNumber": "3",
       "supportsTablet": true,
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "This app uses your location to show you the offers and participating businesses closest to you."
@@ -25,15 +27,22 @@
     },
     "android": {
       "package": "com.foxwylie.disclosure_hub",
-      "versionCode": 25,
+      "versionCode": 26,
       "adaptiveIcon": {
         "foregroundImage": "./assets/white.png",
         "backgroundColor": "#000"
       },
-      "permissions": ["ACCESS_FINE_LOCATION"]
+      "permissions": [
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6b7c50c4-1e20-4205-a23a-a876c46b5665"
+      }
     }
   }
 }
