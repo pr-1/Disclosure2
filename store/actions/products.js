@@ -69,6 +69,7 @@ export const fetchProducts = (
       loadedProducts.push({
         id: resData.companies[key].company_id,
         name: resData.companies[key].name,
+        phone: resData.companies[key].phone,
         directoryTitle: resData.companies[key].directory_title,
         town: resData.companies[key].town,
         postcode: resData.companies[key].postcode,

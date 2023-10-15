@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Modal,
   Pressable,
+  ImageBackground,
 } from "react-native";
 import Colors from "../constants/Colors";
 import { AntDesign } from "@expo/vector-icons";
@@ -76,19 +77,17 @@ const CompanyDetails = ({ route }) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <View style={styles.modalBackgroundImageContainer}>
-              <Image
-                style={styles.modalBackgroundImage}
-                source={require("./../assets/icons/background.jpg")}
-                resizeMode="cover"
-                resizeMethod="resize"
-              />
-            </View>
             <View style={styles.modalContainer}>
-              <View style={styles.modalTitleContainer}>
-                <Text style={styles.modalTitle}>Discount</Text>
-                <Text style={styles.modalTitle}>Voucher</Text>
-              </View>
+              <ImageBackground
+                resizeMode="contain"
+                style={{ padding: 20 }}
+                source={require("./../assets/icons/Voucher.png")}
+              >
+                <View style={styles.modalTitleContainer}>
+                  <Text style={styles.modalTitle}>Discount</Text>
+                  <Text style={styles.modalTitle}>Voucher</Text>
+                </View>
+              </ImageBackground>
               <View>
                 <TouchableOpacity onPress={() => copyToClipboard()}>
                   <View style={styles.ticketTextContainer}>
@@ -140,7 +139,11 @@ const CompanyDetails = ({ route }) => {
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => setModalVisible(!modalVisible)}
               >
-                <AntDesign name="closecircleo" size={width > 600 ? 30 : 25} />
+                <AntDesign
+                  name="closecircleo"
+                  color="white"
+                  size={width > 600 ? 30 : 25}
+                />
               </Pressable>
             </View>
           </View>
@@ -209,48 +212,71 @@ const CompanyDetails = ({ route }) => {
                   flexDirection: "column",
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
-                  marginBottom: 20,
+                  marginBottom: 10,
                 }}
               >
                 <Text style={styles.nameText}>Website</Text>
-                <Icon
-                  name="language"
-                  iconSize={14}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                  }}
                   onPress={() => handlePress(selected?.website)}
-                />
+                >
+                  <Icon name="language" iconSize={14} />
+                  <Text style={styles.linkText}>
+                    {selected?.website.toLowerCase()}
+                  </Text>
+                </View>
               </View>
               <View style={styles.nameTextContainer}>
                 <Text style={styles.nameText}>Socials</Text>
               </View>
               <View style={styles.socialContainer}>
                 {selected?.instagram && (
-                  <View>
-                    <SocialIcon
-                      type="instagram"
-                      light
-                      raised={false}
-                      onPress={() => handlePress(selected?.instagram)}
-                    />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}
+                    onPress={() => handlePress(selected?.instagram)}
+                  >
+                    <SocialIcon type="instagram" light raised={false} />
+                    <Text style={styles.linkText}>
+                      {selected?.instagram.toLowerCase()}
+                    </Text>
                   </View>
                 )}
                 {selected?.facebook && (
-                  <View>
-                    <SocialIcon
-                      type="facebook"
-                      light
-                      raised={false}
-                      onPress={() => handlePress(selected?.facebook)}
-                    />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}
+                    onPress={() => handlePress(selected?.facebook)}
+                  >
+                    <SocialIcon type="facebook" light raised={false} />
+                    <Text style={styles.linkText}>
+                      {selected?.facebook.toLowerCase()}
+                    </Text>
                   </View>
                 )}
                 {selected?.twitter && (
-                  <View>
-                    <SocialIcon
-                      type="twitter"
-                      light
-                      raised={false}
-                      onPress={() => handlePress(selected?.twitter)}
-                    />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}
+                    onPress={() => handlePress(selected?.twitter)}
+                  >
+                    <SocialIcon type="twitter" light raised={false} />
+                    <Text style={styles.linkText}>
+                      {selected?.twitter.toLowerCase()}
+                    </Text>
                   </View>
                 )}
               </View>
@@ -261,21 +287,33 @@ const CompanyDetails = ({ route }) => {
               )}
               <View style={styles.socialContainer}>
                 {selected?.email && (
-                  <View>
-                    <Icon
-                      name="email"
-                      iconSize={14}
-                      onPress={() => handlePress(`mailto:${selected.email}`)}
-                    />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}
+                    onPress={() => handlePress(`mailto:${selected.email}`)}
+                  >
+                    <Icon name="email" iconSize={14} />
+                    <Text style={styles.linkText}>
+                      {selected?.twitter.toLowerCase()}
+                    </Text>
                   </View>
                 )}
                 {selected?.phone && (
-                  <View>
-                    <Icon
-                      name="phone"
-                      iconSize={14}
-                      onPress={() => handlePress(`tel:${selected.phone}`)}
-                    />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}
+                    onPress={() => handlePress(`tel:${selected.phone}`)}
+                  >
+                    <Icon name="phone" iconSize={14} />
+                    <Text style={styles.linkText}>
+                      {selected?.phone.toLowerCase()}
+                    </Text>
                   </View>
                 )}
               </View>
@@ -286,15 +324,15 @@ const CompanyDetails = ({ route }) => {
                 onPress={() => setModalVisible(true)}
               >
                 {selected?.discountAvailable && (
-                  <View style={styles.offerTextContainer}>
-                    <View style={styles.nameTextContainer}>
-                      <Text style={styles.nameText}>Offer Available</Text>
-                    </View>
-                    <View>
-                      <Text style={styles.titleText}>
-                        Exclusive discount AVAILABLE
-                      </Text>
-                    </View>
+                  <View style={[styles.nameTextContainer, { padding: 10 }]}>
+                    <Text
+                      style={[
+                        styles.titleText,
+                        { fontFamily: "Kollektif_Bold", fontSize: 20 },
+                      ]}
+                    >
+                      Offer Available
+                    </Text>
                   </View>
                 )}
               </TouchableOpacity>
@@ -351,9 +389,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   socialContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     width: "100%",
     justifyContent: "flex-start",
+    alignItems: "flex-start",
     gap: 20,
     bottom: 10,
   },
@@ -362,7 +401,7 @@ const styles = StyleSheet.create({
     width: "90%",
   },
   descriptionContainer: {
-    height: "50%",
+    height: "fit-content",
     width: "100%",
     backgroundColor: "white",
     borderRadius: 20,
@@ -374,6 +413,12 @@ const styles = StyleSheet.create({
   nameText: {
     fontFamily: "Kollektif_Bold",
     fontSize: width > 600 ? 25 : 20,
+  },
+  linkText: {
+    fontFamily: "Kollektif",
+    fontSize: 16,
+    textDecorationLine: "underline",
+    textDecorationStyle: "solid",
   },
   nameTextContainer: {
     marginBottom: 10,
@@ -404,9 +449,8 @@ const styles = StyleSheet.create({
   centeredView: {},
   modalView: {
     marginHorizontal: width > 600 ? 80 : 35,
-    backgroundColor: "white",
+    backgroundColor: "grey",
     borderRadius: 20,
-
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -441,26 +485,25 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 20,
     justifyContent: "space-around",
+    backgroundImage: "assets",
   },
   modalTitleContainer: {
     width: width > 600 ? "40%" : "60%",
-    backgroundColor: "rgba(255,255,255,0.5)",
     borderRadius: width > 600 ? 55 : 35,
-
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
-    paddingVertical: width > 600 ? 20 : 8,
-    marginVertical: width > 600 ? 40 : 20,
   },
   modalTitle: {
     fontFamily: "Kollektif",
     fontSize: width > 600 ? 35 : 25,
+    color: "white",
   },
   buttonClose: {
     position: "absolute",
     top: 10,
     right: 10,
+    color: "white",
   },
   ticket: {
     width: "95%",
@@ -474,9 +517,9 @@ const styles = StyleSheet.create({
   ticketTextContainer: {
     paddingBottom: 40,
     paddingTop: 10,
+    paddingHorizontal: 10,
     textAlign: "center",
     width: "100%",
-    backgroundColor: "black",
   },
   codeText: {
     fontFamily: "Kollektif",

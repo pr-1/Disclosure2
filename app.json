@@ -19,7 +19,7 @@
     ],
     "ios": {
       "bundleIdentifier": "com.foxwylie.disclosure-hub",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "supportsTablet": true,
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "This app uses your location to show you the offers and participating businesses closest to you."
@@ -27,11 +27,18 @@
     },
     "android": {
       "package": "com.foxwylie.disclosure_hub",
+      "credentialsSource": "local",
       "versionCode": 26,
       "adaptiveIcon": {
         "foregroundImage": "./assets/white.png",
         "backgroundColor": "#000"
       },
+      "keystore": {
+        "keystorePath": "keystore/release.keystore",
+        "keystorePassword": "secret@123",
+        "keyAlias": "key",
+        "keyPassword": "secret@123"
+      },  
       "permissions": [
         "ACCESS_FINE_LOCATION"
       ]
