@@ -2,7 +2,7 @@
   "expo": {
     "name": "Disclosure Hub",
     "slug": "disclosure-hub",
-    "version": "2.0.7",
+    "version": "2.0.8",
     "orientation": "portrait",
     "icon": "./assets/disclosurelogo.png",
     "userInterfaceStyle": "dark",
@@ -28,7 +28,7 @@
     "android": {
       "package": "com.foxwylie.disclosure_hub",
       "credentialsSource": "local",
-      "versionCode": 26,
+      "versionCode": 27,
       "adaptiveIcon": {
         "foregroundImage": "./assets/white.png",
         "backgroundColor": "#000"

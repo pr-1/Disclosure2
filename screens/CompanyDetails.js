@@ -236,47 +236,29 @@ const CompanyDetails = ({ route }) => {
               <View style={styles.socialContainer}>
                 {selected?.instagram && (
                   <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                    }}
+                    
                     onPress={() => handlePress(selected?.instagram)}
                   >
                     <SocialIcon type="instagram" light raised={false} />
-                    <Text style={styles.linkText}>
-                      {selected?.instagram.toLowerCase()}
-                    </Text>
+                    
                   </View>
                 )}
                 {selected?.facebook && (
                   <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                    }}
+                    
                     onPress={() => handlePress(selected?.facebook)}
                   >
                     <SocialIcon type="facebook" light raised={false} />
-                    <Text style={styles.linkText}>
-                      {selected?.facebook.toLowerCase()}
-                    </Text>
+                    
                   </View>
                 )}
                 {selected?.twitter && (
                   <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                    }}
+                    
                     onPress={() => handlePress(selected?.twitter)}
                   >
                     <SocialIcon type="twitter" light raised={false} />
-                    <Text style={styles.linkText}>
-                      {selected?.twitter.toLowerCase()}
-                    </Text>
+                   
                   </View>
                 )}
               </View>
@@ -288,17 +270,9 @@ const CompanyDetails = ({ route }) => {
               <View style={styles.socialContainer}>
                 {selected?.email && (
                   <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                    }}
                     onPress={() => handlePress(`mailto:${selected.email}`)}
                   >
                     <Icon name="email" iconSize={14} />
-                    <Text style={styles.linkText}>
-                      {selected?.twitter.toLowerCase()}
-                    </Text>
                   </View>
                 )}
                 {selected?.phone && (
@@ -389,7 +363,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   socialContainer: {
-    flexDirection: "column",
+    flexDirection: "row",
     width: "100%",
     justifyContent: "flex-start",
     alignItems: "flex-start",
