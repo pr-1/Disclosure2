@@ -19,7 +19,7 @@
     ],
     "ios": {
       "bundleIdentifier": "com.foxwylie.disclosure-hub",
-      "buildNumber": "4",
+      "buildNumber": "7",
       "supportsTablet": true,
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "This app uses your location to show you the offers and participating businesses closest to you."
@@ -28,7 +28,7 @@
     "android": {
       "package": "com.foxwylie.disclosure_hub",
       "credentialsSource": "local",
-      "versionCode": 27,
+      "versionCode": 30,
       "adaptiveIcon": {
         "foregroundImage": "./assets/white.png",
         "backgroundColor": "#000"

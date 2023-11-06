@@ -44,9 +44,6 @@ const CompanyLink = (props) => {
               {name}
             </Text>
           </View>
-
-          <Text style={styles.text}>Offer: {props.offer}</Text>
-          <Text style={styles.text}>Valid Until: {date}</Text>
           <Text style={styles.text}>
             <Entypo name="location-pin" size={18} color={Colors.accent} />
             {town}
@@ -88,6 +85,8 @@ const styles = StyleSheet.create({
     borderColor: "#888",
     borderRadius: width > 600 ? 800 : 40,
     alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
     marginLeft: 45,
   },
   textContainer: {
@@ -95,6 +94,8 @@ const styles = StyleSheet.create({
     width: "70%",
     paddingVertical: width > 600 ? 8 : 5,
     paddingHorizontal: 2,
+    justifyContent: "center",
+    flexDirection: "column",
   },
   textwrapper: {
     overflow: "hidden",

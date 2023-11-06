@@ -188,8 +188,6 @@ const CompanyDetails = ({ route }) => {
 
           {/* **********************Section Seperator******************************************* */}
 
-          <View style={styles.seperator}></View>
-
           {/* **********************Section Seperator******************************************* */}
 
           <View style={styles.descriptionContainer}>
@@ -202,10 +200,7 @@ const CompanyDetails = ({ route }) => {
                   marginBottom: 20,
                 }}
               >
-                <Text style={styles.titleText}>
-                  {selected?.description}. {selected?.title}.{" "}
-                  {selected?.subtitle}
-                </Text>
+                <Text style={styles.titleText}>{selected?.description}.</Text>
               </View>
               <View
                 style={{
@@ -216,50 +211,54 @@ const CompanyDetails = ({ route }) => {
                 }}
               >
                 <Text style={styles.nameText}>Website</Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "flex-start",
-                    alignItems: "center",
-                  }}
+                <TouchableOpacity
                   onPress={() => handlePress(selected?.website)}
                 >
-                  <Icon name="language" iconSize={14} />
-                  <Text style={styles.linkText}>
-                    {selected?.website.toLowerCase()}
-                  </Text>
-                </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}
+                    onPress={() => handlePress(selected?.website)}
+                  >
+                    <Icon name="language" iconSize={14} />
+                    <Text style={styles.linkText}>
+                      {selected?.website.toLowerCase()}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
               </View>
               <View style={styles.nameTextContainer}>
                 <Text style={styles.nameText}>Socials</Text>
               </View>
               <View style={styles.socialContainer}>
                 {selected?.instagram && (
-                  <View
-                    
+                  <TouchableOpacity
                     onPress={() => handlePress(selected?.instagram)}
                   >
-                    <SocialIcon type="instagram" light raised={false} />
-                    
-                  </View>
+                    <View onPress={() => handlePress(selected?.instagram)}>
+                      <SocialIcon type="instagram" light raised={false} />
+                    </View>
+                  </TouchableOpacity>
                 )}
                 {selected?.facebook && (
-                  <View
-                    
+                  <TouchableOpacity
                     onPress={() => handlePress(selected?.facebook)}
                   >
-                    <SocialIcon type="facebook" light raised={false} />
-                    
-                  </View>
+                    <View onPress={() => handlePress(selected?.facebook)}>
+                      <SocialIcon type="facebook" light raised={false} />
+                    </View>
+                  </TouchableOpacity>
                 )}
                 {selected?.twitter && (
-                  <View
-                    
+                  <TouchableOpacity
                     onPress={() => handlePress(selected?.twitter)}
                   >
-                    <SocialIcon type="twitter" light raised={false} />
-                   
-                  </View>
+                    <View onPress={() => handlePress(selected?.twitter)}>
+                      <SocialIcon type="twitter" light raised={false} />
+                    </View>
+                  </TouchableOpacity>
                 )}
               </View>
               {(selected?.email || selected?.phone) && (
@@ -269,26 +268,33 @@ const CompanyDetails = ({ route }) => {
               )}
               <View style={styles.socialContainer}>
                 {selected?.email && (
-                  <View
+                  <TouchableOpacity
                     onPress={() => handlePress(`mailto:${selected.email}`)}
                   >
-                    <Icon name="email" iconSize={14} />
-                  </View>
+                    <View
+                      onPress={() => handlePress(`mailto:${selected.email}`)}
+                    >
+                      <Icon name="email" iconSize={14} />
+                    </View>
+                  </TouchableOpacity>
                 )}
                 {selected?.phone && (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                    }}
+                  <TouchableOpacity
                     onPress={() => handlePress(`tel:${selected.phone}`)}
                   >
-                    <Icon name="phone" iconSize={14} />
-                    <Text style={styles.linkText}>
-                      {selected?.phone.toLowerCase()}
-                    </Text>
-                  </View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Icon name="phone" iconSize={14} />
+                      <Text style={styles.linkText}>
+                        {selected?.phone.toLowerCase()}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
                 )}
               </View>
             </ScrollView>
@@ -423,7 +429,7 @@ const styles = StyleSheet.create({
   centeredView: {},
   modalView: {
     marginHorizontal: width > 600 ? 80 : 35,
-    backgroundColor: "grey",
+    backgroundColor: "#36454F",
     borderRadius: 20,
     alignItems: "center",
     shadowColor: "#000",
