@@ -130,7 +130,7 @@ const Profile = ({ navigation }) => {
         postcode: user.postcode,
         dob: user.dob,
         gender: user.gender,
-        mailinglist: user.mailingList === 1 ? true : false,
+        mailinglist: user.mailingList,
         check_nameInputChange: true,
         check_textInputChange: true,
         check_phoneInputChange: true,
@@ -139,7 +139,7 @@ const Profile = ({ navigation }) => {
       });
       setDate(new Date(user.dob));
       setGender(user.gender);
-      setMailingList(user.mailingList === 1 ? true : false);
+      setMailingList(user.mailingList);
     }
   }, [user]);
 
@@ -147,8 +147,9 @@ const Profile = ({ navigation }) => {
     setMailingList(!mailingList);
     setData({
       ...data.current,
-      mailinglist: !data.mailinglist,
+      mailinglist: !data.mailingList,
     });
+    updateHandler();
   };
 
   // function showDatePicker() {
@@ -196,7 +197,7 @@ const Profile = ({ navigation }) => {
           .toLowerCase()
           .replace(/[^a-z0-9 -]/gi, "")
           .split(" ");
-        if (val.length <= data.fname.length + data.lname.length) {
+        if (val.length <= data.fname?.length + data.lname?.length) {
           if (nameArr.length === 1) {
             fname = nameArr[0];
             lname = "";
@@ -360,9 +361,9 @@ const Profile = ({ navigation }) => {
   }, [data]);
 
   const updateHandler = async () => {
-    // if (data.dob === "") {
-    //   setData({ ...data.current, isValidDateOfBirth: false });
-    // }
+    if (data.dob === "") {
+      setData({ ...data.current, isValidDateOfBirth: false });
+    }
     if (data.gender === "") {
       setData({ ...data.current, isValidGender: false });
     }
@@ -384,6 +385,7 @@ const Profile = ({ navigation }) => {
           )
         );
         signIn(response);
+        console.log("profile updated", response);
         Alert.alert("Profile updated successfully", "", [{ text: "Ok" }]);
       } catch (err) {
         setError(err.message);
@@ -661,7 +663,7 @@ const Profile = ({ navigation }) => {
                 <TouchableOpacity onPress={checkBoxHandler}>
                   <View style={styles.action}>
                     <Entypo name="newsletter" size={20} />
-                    {data.current.mailinglist ? (
+                    {mailingList ? (
                       <View style={styles.checked}>
                         <View></View>
                         <Text style={styles.textCheckbox}>

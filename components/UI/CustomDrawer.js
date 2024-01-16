@@ -108,7 +108,6 @@ const CustomDrawer = (props) => {
               name="Magazine"
               target="Magazine"
               cat=""
-              external
               navigation={props.navigation}
               state={props.state}
             />

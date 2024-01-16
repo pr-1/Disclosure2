@@ -2,7 +2,7 @@
   "expo": {
     "name": "Disclosure Hub",
     "slug": "disclosure-hub",
-    "version": "2.0.8",
+    "version": "2.0.9",
     "orientation": "portrait",
     "icon": "./assets/disclosurelogo.png",
     "userInterfaceStyle": "dark",
@@ -19,7 +19,7 @@
     ],
     "ios": {
       "bundleIdentifier": "com.foxwylie.disclosure-hub",
-      "buildNumber": "7",
+      "buildNumber": "8",
       "supportsTablet": true,
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "This app uses your location to show you the offers and participating businesses closest to you."
@@ -28,7 +28,7 @@
     "android": {
       "package": "com.foxwylie.disclosure_hub",
       "credentialsSource": "local",
-      "versionCode": 30,
+      "versionCode": 31,
       "adaptiveIcon": {
         "foregroundImage": "./assets/white.png",
         "backgroundColor": "#000"

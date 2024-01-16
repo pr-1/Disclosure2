@@ -82,6 +82,19 @@ export const update = (
   token
 ) => {
   return async (dispatch) => {
+    console.log(
+      "calling api for update ",
+      fname,
+      lname,
+      email,
+      phone,
+      postcode,
+      dob,
+      gender,
+      mailingList,
+      userId,
+      token
+    );
     const response = await fetch(`${API_URL}/users/update/${userId}`, {
       method: "POST",
       headers: {
