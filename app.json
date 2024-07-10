@@ -28,7 +28,7 @@
     "android": {
       "package": "com.foxwylie.disclosure_hub",
       "credentialsSource": "local",
-      "versionCode": 31,
+      "versionCode": 35,
       "adaptiveIcon": {
         "foregroundImage": "./assets/white.png",
         "backgroundColor": "#000"
